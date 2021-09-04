@@ -108,6 +108,11 @@ export async function Musically (url: string): Promise <Mussically> {
 				}
 			})
 			const $: CheerioAPI= cheerio.load(data.data)
+			let FORM: any = {
+				[`${$("#link_url").attr("name")}`]: url,
+				[`${$("#submit-form > div").find("div:nth-child(1) > input[type=hidden]:nth-child(2)").attr("name")}`]: $("#submit-form > div").find("div:nth-child(1) > input[type=hidden]:nth-child(2)").attr("value"),
+				verify: $("#submit-form > div").find("div:nth-child(1) > input[type=hidden]:nth-child(3)").attr("value")
+			}
 			const getPost: AxiosResponse = await axios({
 				url: "https://musicaldown.com/id/download",
 				method: "POST",
@@ -115,11 +120,7 @@ export async function Musically (url: string): Promise <Mussically> {
 					'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
 					"cookie": data.headers["set-cookie"].join("")
 				},
-				data: new URLSearchParams(Object.entries({
-					[`${$("#link_url").attr("name")}`]: url,
-					[`${$("#submit-form > div").find("div:nth-child(1) > input[type=hidden]:nth-child(2)").attr("name")}`]: $("#submit-form > div").find("div:nth-child(1) > input[type=hidden]:nth-child(2)").attr("value"),
-					verify: $("#submit-form > div").find("div:nth-child(1) > input[type=hidden]:nth-child(3)").attr("value")
-				}))
+				data: new URLSearchParams(Object.entries(FORM))
 			})
 			const c: CheerioAPI= cheerio.load(getPost.data)
 			const Format: Mussically = {
