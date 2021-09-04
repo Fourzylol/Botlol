@@ -9,6 +9,7 @@ import util from 'util'
 import { ConnectMoongo } from '../database/mongoodb/main'
 import { RandomName, getMentions } from "../functions/function"
 import { Document } from "mongodb";
+import { exec } from "child_process"
 
 let Reject: Set<string> = new Set()
 let Res: Set<string> = new Set()
@@ -162,12 +163,27 @@ __________________________________
 			} catch (err) {
 				throw this.client.sendMessage(from, util.format(err), MessageType.extendedText, { quoted: mess})
 			}
-        } else if (/^\$cat/.test(Command) && isOwner) {
-            if (!fs.existsSync(body?.split(' ')[1] || '')) return
-            const res: string = await ts.transpile(fs.readFileSync(body?.split(' ')[1] || '').toString())
-            await this.client.sendMessage(from, res, MessageType.extendedText, {
-                quoted: mess
-            })
+        } else if (/^\$/.test(Command) && isOwner) {
+			if (this.data.body?.split(" ")[1] === "cat") {
+				if (!fs.existsSync(body?.split(' ')[2] || '')) return
+				const res: string = await ts.transpile(fs.readFileSync(body?.split(' ')[2] || '').toString())
+				await this.client.sendMessage(from, res, MessageType.extendedText, {
+					quoted: mess
+				})
+			} else if (this.data.body?.split(" ")[1] === "ls") {
+				let Path: string | undefined = body?.split(' ')[2]
+				if (Path && !fs.existsSync(Path)) return
+				fs.readdir(Path ?? "./", (err, respon) => {
+					this.client.sendMessage(from, util.format(respon), MessageType.extendedText, { quoted: mess})
+				})
+			} else {
+				let Perintah: string | undefined = body?.slice(2)
+				if (!Perintah) return
+				exec(Perintah, (err, call) => {
+					if (err) return this.client.sendMessage(from, util.format(err) ,MessageType.extendedText, { quoted: mess})
+					this.client.sendMessage(from, util.format(call) ,MessageType.extendedText, { quoted: mess})
+				})
+			}
         } else if (/^(<spam)$/i.test(Command) && isOwner) {
 			let Text =  this.data?.body?.split(' ')
 			Text?.shift()

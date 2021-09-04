@@ -2,8 +2,8 @@ import { GroupData } from '.'
 import { Client } from '../src/Client'
 import { ConnectMoongo } from '../database/mongoodb/main';
 import { WAConnection, MessageType } from '@adiwajshing/baileys'
-import { Commands, IgPostDown, IgReelsDown, IgTvDown, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2, FaceBookDown, TiktokDownloaders } from '../typings';
-import {  InstaDownloader, mediafireDown, YtPlaymp3, YtPlaymp4, Ytplaymp3Server2, Ytplaymp4Server2, FacebookDown,  tiktokDownloader } from "../routers/api";
+import { Commands, IgPostDown, IgReelsDown, IgTvDown, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2, FaceBookDown, TiktokDownloaders, Mussically } from '../typings';
+import {  InstaDownloader, mediafireDown, YtPlaymp3, YtPlaymp4, Ytplaymp3Server2, Ytplaymp4Server2, FacebookDown,  tiktokDownloader, Musically } from "../routers/api";
 import { IndIgPost, IndSuccesDownloader, IndIgReelsDown, IndIgTvDown,  IndIGDlInvalid, BukanIgDown, BukanUrl,  IndTunggu, IndMediaFire, BukanMediaFire, IndSizeBesar, IndInputLink,  IndInputLinkYt,  IndYtPlayMP4, IndYtPlayAudSer2, IndYtPlayVidSer2,  IndYtPlayMP3,  IndQuerryKosong, IndYoutubeKosong, IndFaceBookDown, IndFesbukErr, IndLinkFesbuk, IndFotoFb, IndTiktokDown,  IndTiktokErr, IndBukanTiktok, IndTungguDown, GaSuppotrFb,  IndBlomSupport   } from "../lang/ind";
 import parsems, { Parsed } from "parse-ms";
 import { isUrl } from "../functions/function";
@@ -48,8 +48,24 @@ export class Downloader extends GroupData {
 						await this.Ra.sendVideo(from, String(value.nowm || value.wm), IndTiktokDown(value), mess)
 						break
 					}
-				}).catch(() => {
-					return void this.Ra.reply(from,  IndTiktokErr(), mess)
+				}).catch(async () => {
+					await Musically(getRespon).then(async (values: Mussically) => {
+						switch (true) {
+							case /(nowm|withoutwm|nowatermark)/i.test(args[0]):{
+								await this.Ra.sendVideo(from, String(values.nowm ?? values.mp4), "", mess)
+							}
+							break
+							case /(wm|withwm|watermark)/i.test(args[0]): {
+								await this.Ra.sendVideo(from, String(values.original),  "", mess)
+							}
+							break
+							default:
+							await this.Ra.sendVideo(from, String(values.nowm || values.mp4 || values.original), "", mess)
+							break
+						}
+					}).catch (() => {
+						return void this.Ra.reply(from,  IndTiktokErr(), mess)
+					})
 				})
 			} else if (getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)facebook.com/gi)) {
 				if (getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)facebook.com\/photo\?([\.&=0-9A-Za-z]{14,50})/gi)) return this.Ra.reply(from, IndFotoFb(), mess)
@@ -207,8 +223,24 @@ export class Downloader extends GroupData {
 					await this.Ra.sendVideo(from, String(value.nowm || value.url_with_watermark), IndTiktokDown(value), mess)
 					break
 				}
-			}).catch(() => {
-				return void this.Ra.reply(from,  IndTiktokErr(), mess)
+			}).catch(async () => {
+				await Musically(getRespon).then(async (values: Mussically) => {
+					switch (true) {
+						case /(nowm|withoutwm|nowatermark)/i.test(args[0]):{
+							await this.Ra.sendVideo(from, String(values.nowm ?? values.mp4), "", mess)
+						}
+						break
+						case /(wm|withwm|watermark)/i.test(args[0]): {
+							await this.Ra.sendVideo(from, String(values.original),  "", mess)
+						}
+						break
+						default:
+						await this.Ra.sendVideo(from, String(values.nowm || values.mp4 || values.original), "", mess)
+						break
+					}
+				}).catch (() => {
+					return void this.Ra.reply(from,  IndTiktokErr(), mess)
+				})
 			})
 		})
 	}

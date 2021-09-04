@@ -16,3 +16,5 @@ export * from "./mediafire";
 export * from "./facebook";
 export * from "./emoji";
 export * from "./translate";
+export * from "./joox";
+export * from "./berita";

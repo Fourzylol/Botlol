@@ -1,4 +1,4 @@
-import { instaStalk, TiktokStalk, LirikResult, Azlirik,  GhStalk, Googlesearch, Question, Answer, PlayStore, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2, IgPostDown, IgReelsDown, IgTvDown, FaceBookDown,  TiktokDownloaders } from '../typings'
+import { instaStalk, TiktokStalk, LirikResult, Azlirik,  GhStalk, Googlesearch, Question, Answer, PlayStore, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2, IgPostDown, IgReelsDown, IgTvDown, FaceBookDown,  TiktokDownloaders, ToUrlUguuse, Joox, KompasTerkini } from '../typings'
 import { ChannelSearchResult, VideoSearchResult  } from 'yt-search'
 import { WAGroupMetadata, WAGroupParticipant } from '@adiwajshing/baileys'
 import parsems from 'parse-ms';
@@ -848,7 +848,7 @@ export const indAfkDahNyala = () => {
 	return `Fitur AFK telah anda diaktifkan sebelumnya.`
 }
 export const indJanganTagAfk = (alasan: string, waktu: number) => {
-    const Time = parsems(Date.now() + waktu)
+    const Time = parsems(Date.now() - waktu)
     return `Jangan tag dia dia sedang afk dengan alasan ${alasan},\n\nTelah afk selama ${Time.hours} Jam ${Time.minutes} menit ${Time.seconds} detik yang lalu`
 }
 export const IndWarningSpamTag = () => {
@@ -1158,7 +1158,7 @@ export const IndYtPlayMP4 = (value: youtubeDlCore) => {
 *│「 𝐏𝐋𝐀𝐘 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  」*
 *╰────────────────*
 
-*📬 ID :* ${Regex[0]}
+*📬 ID :* ${Regex[1]}
 *📜 Judul :* ${value.data.title}
 *📍 Link :* ${value.data.video_url}
 *⏱️ Durasi :* ${value.data.durasi}
@@ -1239,4 +1239,57 @@ export const IndTransErr = () => {
 }
 export const IndTranslateMasuk = () => {
 	return `*「❗」* Mohon maaf kak,  harap masukkan text yang ingin kakak translate`
+}
+export const IndToUrl = (data: ToUrlUguuse) => {
+	return `
+*🕳 Nama :* ${data.name}
+*⚖️ Ukuran :* ${data.size}
+*💫 Url :* ${data.url}`
+}
+export const ErrorToUrl = () => {
+	return `*「❗」* Mohon maaf kak, bot gagal menginput media untuk menjadikan url`
+}
+export const InputMedia = () => {
+	return `*「❗」* Mohon maaf kak, harap masukkan media yang ingin di ubah menjadi url`
+}
+export const IndItuNomerOwn = () => {
+	return `Itu ka nomer owner ku jangan di spam ya kak:v`
+}
+export const IndSendSc = () => {
+	return `Ini scnya kak https://github.com/rayyreall/Whatsapp_Bot Cara penginstalan ada di readme`
+}
+export const JooxSer = (result: Joox[]) => {
+	let text: string = "ㅤㅤㅤㅤ  *「 JOOX SEARCH 」*\n\n"
+	let count: number = 1;
+	for (let data of result) {
+		text += `\n
+*${count++}. 🌀 Judul :* ${data.name}
+*⚔️ Id :* ${data.album_id}
+*⏱️ Durasi :* ${data.play_duration}
+*💍 Artist :* ${data.artist_list[0].name}
+*📍 Url :* https://www.joox.com/id/single/${data.id}`
+count++
+	}
+	return text
+}
+export const IndJooxSerError = () => {
+	return `*「❗」* Judul musik yang ingin anda cari tidak di temukan harap ganti judul joox anda`
+}
+export const IndBcDone = () => {
+	return `*✅* Berhasil melakukan broadcast`
+}
+export const IndKompasError = () => {
+	return `*「❗」*  Mohon maafka fitur kompas untuk saat ini sedang error bot otomatis menghubungi owner`
+}
+export const IndKompas = (result: KompasTerkini[]) => {
+	let text: string = "ㅤㅤㅤㅤ  *「 KOMPAS TERKINI 」*\n\n"
+	let count: number = 1;
+	for (let data of result) {
+		text += `\n
+*${count++}. 📜 Judul :* ${data.judul}
+*🎯 Publish :* ${data.tanggal}
+*📍 Url :* ${data.url}`
+count++
+	}
+	return text
 }

@@ -70,3 +70,9 @@ export declare class TiktokDownloaders {
 	wm: string | undefined
 	audio: string | undefined
 }
+
+export interface Mussically {
+	nowm: string | undefined;
+	mp4: string | undefined;
+	original: string | undefined;
+}

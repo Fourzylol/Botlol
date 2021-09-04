@@ -229,7 +229,7 @@ export async function TelegraPh (Path: string) {
 		}
 	})
 }
-export async function ToUrlUguuse (Path: string): Promise <ToUrlUguuse> {
+export async function ToUrluguuse (Path: string): Promise <ToUrlUguuse> {
 	return new Promise (async (resolve, reject) => {
 		if (!fs.existsSync(Path)) return reject(new Error("File not Found"))
 		const BodyForm: FormData = new FormData();

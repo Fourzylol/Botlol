@@ -1,15 +1,15 @@
 import { WAConnection, MessageType, proto, WAMessage } from '@adiwajshing/baileys'
-import { Commands } from '../typings'
+import { Commands, ToUrlUguuse } from '../typings'
 import { Tomp3, Tocute, CreateSticker, toVideoV2, Toimg, createStickerV2, createStickerV3, CreateStickerCircle  } from '../tools'
 import { Tunggu, Buffer, RandomName } from '../functions/function';
-import { ToVideo, EmojiAPI, Translate } from '../routers/api'
+import { ToVideo, EmojiAPI, Translate, ToUrluguuse } from '../routers/api'
 import * as fs from 'fs'
 import { Client } from '../src/Client';
 import parsems from "parse-ms";
 import filesize from "filesize";
 import {  StickerEmoji } from "../tools/emotConvert";
 import { ITranslateResponse, languages } from "@vitalets/google-translate-api"
-import { IndTunggu, IndBukanVid, IndToVid, IndBukanAud, IndBukanSticker, IndGagalSticker, IndErrorMP3, IndStickerReply, BukanStickerGif, InputSticker,  IndSuccesToVid, IndToimgDone,  IndStickerVideoPanjang, IndEmojiNotFound,  IndHarapInputEMot,  ErrorCircle, IndTranslate,  IndTransErr, IndTranslateMasuk } from '../lang/ind'
+import { IndTunggu, IndBukanVid, IndToVid, IndBukanAud, IndBukanSticker, IndGagalSticker, IndErrorMP3, IndStickerReply, BukanStickerGif, InputSticker,  IndSuccesToVid, IndToimgDone,  IndStickerVideoPanjang, IndEmojiNotFound,  IndHarapInputEMot,  ErrorCircle, IndTranslate,  IndTransErr, IndTranslateMasuk, IndToUrl, ErrorToUrl, InputMedia   } from '../lang/ind'
 
 export class Converter {
     constructor(public Ra: Client) {}
@@ -22,7 +22,21 @@ export class Converter {
 		this.StickerCircle()
 		this.TransLate()
 		this.StickerEmoji()
+		this.ToURL()
     }
+	protected async ToURL () {
+		globalThis.CMD.on("convet|tourl", { event: ["tourl <media>"], tag: "converter"}, ["tourl"], async (res: WAConnection, data: Commands) => {
+			const { from, media, mess } = data
+			if (!media) return this.Ra.reply(from, InputMedia(), mess)
+			await this.Ra.reply(from, IndTunggu(), mess)
+			let Path: string = await this.Ra.decryptMediaSave(media)
+			await ToUrluguuse(Path).then((value: ToUrlUguuse) => {
+				this.Ra.reply(from, IndToUrl(value), mess)
+			}).catch (() => {
+				this.Ra.reply(from, ErrorToUrl(), mess)
+			})
+		})
+	}
 	protected async TransLate () {
 		globalThis.CMD.on("Translet", { event: ["translate <to> <text>"], tag: "converter"}, ["translate"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess, bodyQuoted} = data

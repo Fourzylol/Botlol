@@ -1,6 +1,6 @@
 import { WAConnection, MessageType, proto, compressImage } from '@adiwajshing/baileys'
 import * as fs from 'fs'
-import { isUrl, Buffer, getMentions} from '../functions/function'
+import { isUrl, Buffer, getMentions, RandomName } from '../functions/function'
 import filetype, { FileTypeResult } from "file-type"
 
 export class Client {
@@ -15,6 +15,21 @@ export class Client {
             throw console.log(err)
         }
     }
+	public async decryptMediaSave (media: proto.WebMessageInfo, path?: string): Promise <string> {
+		if (!path) path = "./lib/storage/temp/" +  RandomName(15)
+		try {
+			return await this.Client.downloadAndSaveMediaMessage(media, path)
+		} catch (err) {
+			throw console.log(err)
+		}
+	}
+	public async decryptMediaMessage (media: proto.WebMessageInfo): Promise <Buffer> {
+		try {
+			return await this.Client.downloadMediaMessage(media)
+		} catch (err) {
+			throw console.log(err)
+		}
+	}
     public async sendContactOwner(from: string, id?: proto.WebMessageInfo): Promise<void> {
         try {
             const Vcard: string =

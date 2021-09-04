@@ -10,3 +10,4 @@ export * from './groupMem'
 export * from './groupUser'
 export * from "./groupGuard"
 export * from "./owner";
+export * from "./berita";

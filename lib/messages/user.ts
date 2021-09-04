@@ -11,7 +11,7 @@ import * as fs from 'fs'
 import { ConnectMoongo } from '../database/mongoodb/main'
 import { config } from 'dotenv'
 config({ path: './.env' })
-import { IndSuccesSetPrefix, IndSuccesSetMulti, IndDonePushMulti, IndErrPushMulti, IndDoneDelMulti, IndErrDelMulti, IndMultiData, BerhasilJoin, IndGagalJoin, IndSudahDalamGc } from '../lang/ind'
+import { IndSuccesSetPrefix, IndSuccesSetMulti, IndDonePushMulti, IndErrPushMulti, IndDoneDelMulti, IndErrDelMulti, IndMultiData, BerhasilJoin, IndGagalJoin, IndSudahDalamGc, IndItuNomerOwn, IndSendSc  } from '../lang/ind'
 
 const LajuCepat: number = Speed()
 const Ping: string = (Speed() - LajuCepat).toFixed(4)
@@ -31,7 +31,15 @@ export class UserHandler extends Convert {
         this.checkMulti()
         this.Creator()
         this.Join()
+		this.pingg()
+		this.ScBot()
     }
+	private ScBot () {
+		globalThis.CMD.on("user|sc", { event: ["sc"], tag: "user"}, ["sc", "script"], async (res: WAConnection, data: Commands) => {
+			const { from, mess } = data
+			return void this.Ra.reply(from, IndSendSc(), mess)
+		})
+	}
     private setPrefix(): void {
         globalThis.CMD.on('user|setprefix <prefix>',   { event: ["setprefix <prefix>"], tag: "user"},['setprefix'], async (res: WAConnection, data: Commands) => {
 			const { from, mess, sender, args } = data
@@ -63,7 +71,8 @@ export class UserHandler extends Convert {
     private Creator(): void {
         globalThis.CMD.on('user|creator/owner',   { event: ["creator/owner"], tag: "user"},['owner', 'creator'], (res: WAConnection, data: Commands) => {
             const { from, mess } = data
-            return void this.Ra.sendContactOwner(from, mess)
+            this.Ra.sendContactOwner(from, mess)
+			return void this.Ra.reply(from, IndItuNomerOwn(), mess)
         })
     }
     private delPrefix(): void | undefined {
@@ -106,13 +115,20 @@ export class UserHandler extends Convert {
 			})
         })
     }
+	private async pingg () {
+		globalThis.CMD.on("user|ping", { event: ["ping"], tag: "user"}, ["ping"], async (res: WAConnection, data: Commands) => {
+			const { from, mess } = data
+			this.Ra.reply(from, "*🌪 Speed :* " + Ping, mess)
+		})
+	}
     private menu(): void {
         globalThis.CMD.on('user|menu',   { event: ["menu"], tag: "user"},['menu', "manu"], async (res: WAConnection, data: Commands) => {
 			const { from, isOwner, sender, command, Prefix } = data
 			const getTag: { name: string, tampil: { event: string[], tag: string, withPrefix: boolean}, pattern: any,callback: any}[] = Object.values(globalThis.CMD.events)
             let Converter: string[][] = getTag.filter((value) => value.tampil.tag === "converter").map((value) => value.tampil.event)
             let User: string[][] = getTag.filter((value) => value.tampil.tag === "user").map((value) => value.tampil.event)
-            let Owner: string[] = ['=>', '$cat', 'publik/public <on/off>']
+            let Owner: string[][] = getTag.filter((value) => value.tampil.tag === "owner").filter((value) => value.tampil.withPrefix).map((value) => value.tampil.event)
+			let OwnerNoPref: string[][] = getTag.filter((value) => value.tampil.tag === "owner").filter((value) => !value.tampil.withPrefix).map((value) => value.tampil.event)
             let Storage: string[][] = getTag.filter((value) => value.tampil.tag === "storage").map((value) => value.tampil.event)
             let Stalker: string[][] = getTag.filter((value) => value.tampil.tag === "stalking").map((value) => value.tampil.event)
             let Group: string[][] = getTag.filter((value) => value.tampil.tag === "groupadmins").map((value) => value.tampil.event)
@@ -122,6 +138,7 @@ export class UserHandler extends Convert {
 			let Guards: string[][] = getTag.filter((value) => value.tampil.tag === "groupguards").map((value) => value.tampil.event)
 			let Search: string[][]= getTag.filter((value) => value.tampil.tag === "search").map((value) => value.tampil.event)
 			let Downloader: string[][] = getTag.filter((value) => value.tampil.tag === "downloader").map((value) => value.tampil.event)
+			let Berita: string[][] = getTag.filter((value) => value.tampil.tag === "berita").map((value) => value.tampil.event)
 			let UserMenu: string[] = []
 			let ConverterMenu: string[] = []
 			let StorageMenu: string[] = []
@@ -133,6 +150,15 @@ export class UserHandler extends Convert {
 			let GuardsMenu: string[] = []
 			let  SearchMenu: string[] = []
 			let DownloaderMenu: string[] = []
+			let OwnerMenu: string[] = []
+			let OwnerNoPrefMenu: string[] = []
+			let BeritaMenu: string[] = []
+			for (let menu of  OwnerNoPref) {
+				menu.map((value) => OwnerNoPrefMenu.push(value))
+			}
+			for (let menu of Owner) {
+				menu.map((value) => OwnerMenu.push(value))
+			} 
 			for (let menu of User) {
 				menu.map((value) => UserMenu.push(value))
 			}
@@ -166,6 +192,9 @@ export class UserHandler extends Convert {
 			for (let menu of Downloader) {
 				menu.map((value) => DownloaderMenu.push(value))
 			}
+			for (let menu of Berita) {
+				menu.map((value) => BeritaMenu.push(value))
+			}
             let informasi: string = `
 👋🏻 Halo ${isOwner ? 'My Owner 🤴🏻' : 'ka'} ${Ucapan()}
 
@@ -183,7 +212,10 @@ export class UserHandler extends Convert {
 *🔑 Apikey* : 𝐍𝐨𝐭 𝐅𝐨𝐮𝐧𝐝\n\n`
 
 informasi += '\n         *MENU OWNER*\n\n'
-for (let result of Owner) {
+for (let result of OwnerMenu.sort()) {
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
+}
+for (let result of OwnerNoPrefMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + result + '*\n'
 }
 informasi += '\n         *MENU USER*\n\n'
@@ -228,6 +260,10 @@ for (let result of GuardsMenu.sort()) {
 }
 informasi += '\n         *VOTING*\n\n'
 for (let result of VotingMenu.sort()) {
+	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
+}
+informasi += "\n         *BERITA*\n\n"
+for (let result of BeritaMenu.sort()) {
 	informasi += `*ℒ⃝🕊️ •* *` + Prefix + result + '*\n'
 }
 informasi += `\n\n__________________________________

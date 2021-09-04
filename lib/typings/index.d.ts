@@ -13,3 +13,5 @@ export * from "./brainly";
 export * from "./playstore";
 export * from "./youtube";
 export * from "./facebook";
+export * from "./Joox";
+export * from "./berita"

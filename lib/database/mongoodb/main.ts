@@ -1,7 +1,7 @@
-import { Muted  as _dataMuted } from '.';
-import { ConnectMongoo} from "../../functions/log"
+import { Note  as _dataNotes } from '.';
+import { ConnectMongoo } from "../../functions/log"
 
-export class ConnectMoongo extends _dataMuted {
+export class ConnectMoongo extends  _dataNotes  {
     constructor() {
         super()
     }

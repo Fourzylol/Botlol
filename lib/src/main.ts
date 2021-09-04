@@ -4,7 +4,7 @@ import { WAChatUpdate, WAConnection, proto } from '@adiwajshing/baileys'
 import { HandlerMsg } from './handler'
 import { HandlingMessage, Commands } from '../typings'
 import { Command } from './command'
-import { OwnerOnly , groupMembers, CheckUpdate } from '../messages'
+import { BeritaTerkini , groupMembers, CheckUpdate } from '../messages'
 import { Detector } from './detector'
 import { Client } from './Client'
 import { IndPublicSucces, IndPublicDuplicate } from '../lang/ind'
@@ -16,8 +16,8 @@ export class Main {
     public database: ConnectMoongo = new ConnectMoongo()
     public client: WAConnection = new WAConnection()
     public message: HandlerMsg = new HandlerMsg(this.client, this.database)
-    public Ra: Client = new Client(this.client)
-    private Respon: OwnerOnly  = new OwnerOnly(this.Ra, this.database)
+    public Ra: Client = new Client (this.client)
+    private Respon: BeritaTerkini = new BeritaTerkini(this.Ra, this.database)
     private Update: CheckUpdate = new CheckUpdate(this.client)
     protected detector: any
     constructor() {}
@@ -36,10 +36,10 @@ export class Main {
             this.detector.Handling()
             globalThis.prefix = data.Prefix
             globalThis.CMD = new Command(globalThis.prefix)
-            this.Respon.SendOwner()
+            this.Respon.sendingResponsee()
             new groupMembers(this.client, data).sendDataMembers()
             this.detector.CommnadGlobal()
-			globalThis.CMD.on("owner|Publik", { event: ["publik <on/off>", "public <on/off>", "=> <kode>", "$cat", "<spam <jumlah> <text>"], tag: "owner", withPrefix: false}, ["publik", "public"], async (res: WAConnection, data: Commands) => {
+			globalThis.CMD.on("owner|Publik", { event: ["=> <kode>", "$ <exec>", "<spam <jumlah> <text>"], tag: "owner", withPrefix: false}, ["publik", "public"], async (res: WAConnection, data: Commands) => {
 				const { args, isOwner } = data
 				if (!isOwner) return
 				if (/(on)/i.test(args[0])){

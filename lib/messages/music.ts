@@ -1,9 +1,9 @@
 import { Stalking } from '.'
 import { Client } from '../src/Client'
 import { WAConnection } from '@adiwajshing/baileys'
-import { Commands, LirikResult, Azlirik, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2 } from '../typings'
-import { LirikLagu, AzLirik, YtPlaymp3, YtPlaymp4, Ytplaymp3Server2, Ytplaymp4Server2, LirikServer2 } from '../routers/api'
-import { IndLirikMusicMatch, IndAzLirik, LirikGada, IndYtPlayMP3,  IndQuerryKosong, IndYoutubeKosong,  IndTungguSearch, IndSizeBesar, IndYtPlayMP4, IndYtPlayAudSer2, IndYtPlayVidSer2  } from '../lang/ind'
+import { Commands, LirikResult, Azlirik, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2, Joox } from '../typings'
+import { LirikLagu, AzLirik, YtPlaymp3, YtPlaymp4, Ytplaymp3Server2, Ytplaymp4Server2, LirikServer2, JooxSearch } from '../routers/api'
+import { IndLirikMusicMatch, IndAzLirik, LirikGada, IndYtPlayMP3,  IndQuerryKosong, IndYoutubeKosong,  IndTungguSearch, IndSizeBesar, IndYtPlayMP4, IndYtPlayAudSer2, IndYtPlayVidSer2, JooxSer,  IndJooxSerError   } from '../lang/ind'
 import { ConnectMoongo } from '../database/mongoodb/main';
 
 export class MusicHandling extends Stalking {
@@ -16,7 +16,20 @@ export class MusicHandling extends Stalking {
 		this.PlayYt()
 		this.YtMp3()
 		this.YtMP4()
+		this.JooxSearch()
     }
+	private JooxSearch () {
+		globalThis.CMD.on("musik|jooxserching", { event: ["jooxsearch <title>"], tag: "musik"}, ["jooxsearch", "searchjoox"], async (res: WAConnection, data: Commands) => {
+			const { from, args, mess } = data
+			if (!args[0]) return this.Ra.reply(from, IndQuerryKosong(), mess)
+			this.Ra.reply(from,  IndTungguSearch(), mess)
+			await JooxSearch(args.join(" ")).then((value: Joox[]) => {
+				this.Ra.sendImage(from, value[0].images[0].url,  JooxSer(value), mess)
+			}).catch (() => {
+				this.Ra.reply(from,  IndJooxSerError(), mess)
+			})
+		})
+	}
 	private YtMP4 () {
 		globalThis.CMD.on("musik|ytmp4 <judul/url>",  { event: ["ytmp4 <judul/url>"], tag: "musik"}, ["ytmp4"], async (res: WAConnection, data: Commands) => {
 			const { from, args, mess } = data

@@ -11,7 +11,7 @@ export async function Wikipedia (title: string): Promise <{ url: string, judul: 
 				judul: respon.title,
 				publish: respon.timestamp,
 				desk: respon.description,
-				thumb: respon.originalimage.source,
+				thumb: respon?.originalimage?.source ?? respon.thumbnail.source,
 				penjelasan: respon.extract
 			}
 			return resolve(Format)
