@@ -16,11 +16,14 @@ export const IndTest = (): string => {
 export const IndTungguDown = (Type: string) => {
 	return `*⏳* Tunggu sebentar sedang mengeksekusi link ${Type}`
 }
+export const GaSupportStickerGif = (command: string) => {
+	return `*「❗」*  Mohon maaf kak Fitur ini tidak Support untuk sticker bertype Gif. Jika kakak Kebingungan harap ketik ${command} -help untuk mendapatkan info lebih lanjut`
+}
 export const GaSuppotrFb = () => {
 	return `*「❗」* Mohon maaf kak untuk saat ini downloader facebook hanya support link dengan type videos`
 }
-export const IndBlomSupport = () => {
-	return `*「❗」* Mohon maaf kak link yang kakak masukkan belum support untuk fitur downloader`
+export const IndBlomSupport = (command: string) => {
+	return `*「❗」* Mohon maaf kak link yang kakak masukkan belum support untuk fitur downloader, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
 export const IndTunggu = (): string => {
 	let kata: string[] = [
@@ -36,8 +39,8 @@ export const IndTunggu = (): string => {
 	]
     return Loading[Math.floor(Math.random() * (Loading.length))] + " " + kata[Math.floor(Math.random() * (kata.length))].trim()
 }
-export const IndBukanVid = (): string => {
-    return `Maaf file yang anda kirim bukan berformat video`
+export const IndBukanVid = (command: string): string => {
+    return `Maaf file yang anda kirim bukan berformat video, Jika kakak kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
 export const IndBukanAud = (): string => {
 	let kata: string[] = [
@@ -100,9 +103,9 @@ export const IndMultiData = (prefix: string): string => {
 }
 export const IndBukanSticker = (caption: string): string => {
 	let kata: string[] = [
-		`*「❗」* Mohon maaf ka reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini`,
-		`*「❗」* Mohon maaf ka Kaka tidak reply sticker apapun harap reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini`,
-		`*「❗」* Mohon maaf ka harap reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini`
+		`*「❗」* Mohon maaf ka reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini. Jika kamu kebingungan ketik ${caption} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Mohon maaf ka Kaka tidak reply sticker apapun harap reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini, Jika kamu kebingungan ketik ${caption} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Mohon maaf ka harap reply sticker dengan caption *${caption}*, untuk menggunakan perintah ini, Jika kamu kebingungan ketik ${caption} -help untuk mendapatkan info lebih lanjut.`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -334,11 +337,14 @@ export const IndSpammer = (): string => {
 }
 export const IndStickerReply = (command: string): string => {
 	let kata: string[] = [
-		`*「❗」* Mohon maaf ka, diharapkan kirim/reply Gambar / Video / Sticker / dokument (image/video) dengan caption ${command} untuk menggunakan perintah ini`,
-		`*「❗」* Maaf ka, kaka tidak mengirimkan media apapun, Harap Kirim/reply media dengan caption ${command} untuk menggunakan command ini`,
-		`*「❗」* Mohon maaf kak, harap kirim/ reply media menggunakan caption ${command} Untuk menggunakan perintah ini`
+		`*「❗」* Mohon maaf ka, diharapkan kirim/reply Gambar / Video / Sticker / dokument (image/video) dengan caption ${command} untuk menggunakan perintah ini, Jika kakak kebingunggan ketik ${command} -help untuk mendapatkan info lebih lanjut`,
+		`*「❗」* Maaf ka, kaka tidak mengirimkan media apapun, Harap Kirim/reply media dengan caption ${command} untuk menggunakan command ini, Jika kakak kebingunggan ketik ${command} -help untuk mendapatkan info lebih lanjut`,
+		`*「❗」* Mohon maaf kak, harap kirim/ reply media menggunakan caption ${command} Untuk menggunakan perintah ini, Jika kakak kebingunggan ketik ${command} -help untuk mendapatkan info lebih lanjut`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
+}
+export const IndStickerCircleReply = (command: string) => {
+	return `*「❗」* Mohon maaf kak, harap kirim/reply media yang ingin di ubah menjadi sticker bulat, Jika kakak kebingungan ketik ${command} --help`
 }
 export const IndStickerVideoPanjang = () => {
 	let kata: string[] = [
@@ -370,22 +376,22 @@ export const StickerFound = (sender: string): string => {
 export const ErrorCircle = () => {
 	return `*「❗」* Mohon maaf Sticker Circle yang ingin anda buat rusak harap ganti media lain`
 }
-export const BotGaAdmin = () => {
+export const BotGaAdmin = (command: string) => {
 	let kata: string[] = [
-		`*「❗」*  Maaf kak bot bukan admin group tidak bisa melaksanakan perintah`,
-		`*「❗」*  Mohon maaf kak jika ingin menggunakan fitur ini harap jadikan bot sebagai admin`,
-		`*「❗」* Maaf ka, fitur ini berlaku jika bot menjadi admin`,
-		`*「❗」*  Maaf kak, bot bukan admin grup bot tidak bisa melaksanakan perintah :(`,
-		`*「❗」*  Mohon maaf kak harap jadikan bot sebagai admin terlebih dahulu`,
-		`*「❗」*  Maaf kak bot bukan admin grup tidak dapat melaksanakan perintah`
+		`*「❗」*  Maaf kak bot bukan admin group tidak bisa melaksanakan perintah, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」*  Mohon maaf kak jika ingin menggunakan fitur ini harap jadikan bot sebagai admin, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Maaf ka, fitur ini berlaku jika bot menjadi admin, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」*  Maaf kak, bot bukan admin grup bot tidak bisa melaksanakan perintah. Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」*  Mohon maaf kak harap jadikan bot sebagai admin terlebih dahulu, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」*  Maaf kak bot bukan admin grup tidak dapat melaksanakan perintah, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
-export const PilihBukatutup = () => {
+export const PilihBukatutup = (command: string) => {
 	let kata: string[] = [
-		`*「❗」*  Maaf kak format yang kakak masukkan salah, pilih buka/tutup`,
-		`*「❗」*  Mohon maaf kak untuk menggunakan perintah ini harap pilih buka atau tutup`,
-		`*「❗」*  Maaf kak harap pilih buka/tutup`
+		`*「❗」*  Maaf kak format yang kakak masukkan salah, pilih buka/tutup, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」*  Mohon maaf kak untuk menggunakan perintah ini harap pilih buka atau tutup,  Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」*  Maaf kak harap pilih buka/tutup,  Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -397,17 +403,17 @@ export const PilihOnOff = () => {
 	]
     return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
-export const BukanDalamGroup = () => {
+export const BukanDalamGroup = (command: string) => {
 	let kata: string[] = [
-		`*「❗」* Maaf kak perintah ini hanya bisa di gunakan di dalam grup saja kak`,
-		`*「❗」* Mohon maaf kak sebelumnya, command ini hanya tersedia dalam group`,
-		`*「❗」* Maaf ka perintah ini khusus untuk didalam group saja kak`, 
-		`*「❗」* Maaf kak perintah ini hanya berlaku jika kakak berada didalam group`,
-		`*「❗」* Maaf kak perintah ini khusus untuk group, bukan personal chat`,
-		`*「❗」* Maaf kak fitur ini tersedia hanya di dalam group`,
-		`*「❗」* Maaf kak fitur ini tidak berlaku dalam personal chat`,
-		`*「❗」* Maaf kak, kakak hanya bisa menggunakan perintah ini jika berada didalam group`,
-		`*「❗」* Mohon maaf kak perintah ini tidak tersedia untuk personal chat`
+		`*「❗」* Maaf kak perintah ini hanya bisa di gunakan di dalam grup saja kak, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Mohon maaf kak sebelumnya, command ini hanya tersedia dalam group, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Maaf ka perintah ini khusus untuk didalam group saja kak, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`, 
+		`*「❗」* Maaf kak perintah ini hanya berlaku jika kakak berada didalam group, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Maaf kak perintah ini khusus untuk group, bukan personal chat, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Maaf kak fitur ini tersedia hanya di dalam group, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Maaf kak fitur ini tidak berlaku dalam personal chat, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Maaf kak, kakak hanya bisa menggunakan perintah ini jika berada didalam group, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Mohon maaf kak perintah ini tidak tersedia untuk personal chat, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
@@ -718,25 +724,26 @@ export const IndUdahVote = () => {
 	]
 	return kata[Math.floor(Math.random() * (kata.length))].trim()
 }
-export const BukanStickerGif = () => {
+export const BukanStickerGif = (caption: string) => {
 	let kata: string[] = [
-		`*「❗」*  Mohon maaf kak Sticker yang kaka gunakan bukan sticker gif, bot tidak dapat melaksanakan perintah`,
-		`*「❗」*  Maaf ka harap gunakan sticker gif kak 🙏🏻`,
-		`*「❗」* Maaf ka media yang kaka gunakan bukan sticker gif harap gunakan sticker gif kak 🙏🏻`
+		`*「❗」*  Mohon maaf kak Sticker yang kaka gunakan bukan sticker gif, bot tidak dapat melaksanakan perintah,  Jika kamu kebingungan ketik ${caption} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」*  Maaf ka harap gunakan sticker gif kak 🙏🏻,  Jika kamu kebingungan ketik ${caption} -help untuk mendapatkan info lebih lanjut.`,
+		`*「❗」* Maaf ka media yang kaka gunakan bukan sticker gif harap gunakan sticker gif kak 🙏🏻,  Jika kamu kebingungan ketik ${caption} -help untuk mendapatkan info lebih lanjut.`
 	]
     return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
 export const InputImage = () => {
     return `Maaf ka harap kirim / reply gambar dengan caption`
 }
-export const InputSticker = () => {
+export const InputSticker = (command: string) => {
 	let kata: string[] = [
-		`*「❗」* Maaf kak untuk menggunakan perintah ini harap kirim caption dengan reply sticker`,
-		`*「❗」* Mohon maaf kak Harap reply sticker dengan caption`,
-		`*「❗」* Maaf kak perintah ini berlaku jika kakak mereply sticker`
+		`*「❗」* Maaf kak untuk menggunakan perintah ini harap kirim caption dengan reply sticker.  Jika kakak Kebingungan harap ketik ${command} -help untuk mendapatkan info lebih lanjut`,
+		`*「❗」* Mohon maaf kak Harap reply sticker dengan caption.  Jika kakak Kebingungan harap ketik ${command} -help untuk mendapatkan info lebih lanjut`,
+		`*「❗」* Maaf kak perintah ini berlaku jika kakak mereply sticker. Jika kakak Kebingungan harap ketik ${command} -help untuk mendapatkan info lebih lanjut`
 	]
 	return  kata[Math.floor(Math.random() * (kata.length))].trim()
 }
+export const ErrorToimg = "*「❗」* Mohon Maaf kak, Fitur Toimg saat ini sedang error coba kakak ganti media lain. Jika kamu kakak mendapatkan error Secara terus Menerus Segera hubungi Owner"
 export const IndToimgDone = (waktu: string) => {
 	let Success: string[] = [
 		`*✅*`,
@@ -1141,14 +1148,14 @@ export const IndIgTvDown = (value: IgTvDown, url: string) => {
 export const IndIGDlInvalid = () => {
 	return `*「❗」* Mohon maaf kak, Link instagram yang ingin kaka download Invalid harap isi Url dengan benar`
 }
-export const BukanIgDown = () => {
-	return `*「❗」*  Mohon maaf kak, kakak tidak memasukkan link instagram dengan benar. harap masukkan link instagram yang ingin kakak download dengan benar`
+export const BukanIgDown = (command: string) => {
+	return `*「❗」*  Mohon maaf kak, kakak tidak memasukkan link instagram dengan benar. harap masukkan link instagram yang ingin kakak download dengan benar, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
-export const BukanUrl = () => {
-	return `*「❗」* Mohon maaf kak, data yang kakak masukkan bukan berupa Url harap masukkan urlnya kak`
+export const BukanUrl = (command: string) => {
+	return `*「❗」* Mohon maaf kak, data yang kakak masukkan bukan berupa Url harap masukkan urlnya kak, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
-export const BukanMediaFire = () => {
-	return `*「❗」*  Mohon maaf kak, Link yang kakak masukkan bukan link file dari media fire`
+export const BukanMediaFire = (command: string) => {
+	return `*「❗」*  Mohon maaf kak, Link yang kakak masukkan bukan link file dari media fire, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
 export const IndYtPlayMP4 = (value: youtubeDlCore) => {
 	let Regex: RegExpExecArray | null | string = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/.exec(value.data.video_url)
@@ -1181,17 +1188,17 @@ export const IndYtPlayMP4 = (value: youtubeDlCore) => {
 export const IndSizeBesar = (awal: string, akhir: string, fitur: string, Link: string) => {
 	return `*「❗」* Mohon maaf kak ukuran media kakak ${awal} terlalu besar untuk dikirimkan bot, batas maksimal size fitur ${fitur} adalah ${akhir}. Kaka bisa download manual di link berikut : ${Link}`
 }
-export const IndInputLink = () => {
-	return `*「❗」* Mohon maaf kak, kakak tidak menginput link apapun untuk menggunakan perintah ini kakak harus menginput link`
+export const IndInputLink = (command: string) => {
+	return `*「❗」* Mohon maaf kak, kakak tidak menginput link apapun untuk menggunakan perintah ini kakak harus menginput link, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
-export const IndInputLinkYt = () => {
-	return `*「❗」* Mohon maaf kak, kakak tidak memasukkan link youtube apapun Harap masukkan link youtube yang ingin di download`
+export const IndInputLinkYt = (command: string) => {
+	return `*「❗」* Mohon maaf kak, kakak tidak memasukkan link youtube apapun Harap masukkan link youtube yang ingin di download, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
 export const IndFesbukErr = () => {
 	return `*「❗」* Mohon maaf kak, Link facebook yang kakak kirim invalid harap masukkan link facebook dengan valid`
 }
-export const IndLinkFesbuk = () => {
-	return `*「❗」* Mohon maaf kak, Harap masukkan link post facebook yang ingin di download dengan benar`
+export const IndLinkFesbuk = (command: string) => {
+	return `*「❗」* Mohon maaf kak, Harap masukkan link post facebook yang ingin di download dengan benar, Jika kamu bingung ketik ${command} -help`
 }
 export const IndFotoFb = () => {
 	return `*「❗」*  Mohon maaf kak, Kalo foto tinggal ss aja kak Ngapain pake bot nyusahin`
@@ -1216,17 +1223,17 @@ export const IndFaceBookDown = (data: FaceBookDown) => {
 *📑 Desk :* ${data.desk}
 `
 }
-export const IndTiktokErr = () => {
-	return `*「❗」* Mohon maaf kak, link tiktok yang kakak masukkan invalid/video private harap ganti url tiktok lain`
+export const IndTiktokErr = (command: string) => {
+	return `*「❗」* Mohon maaf kak, link tiktok yang kakak masukkan invalid/video private harap ganti url tiktok lain, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
-export const IndBukanTiktok = () => {
-	return `*「❗」* Mohon maaf kak, kakak tidak memasukkan link tiktok dengan benar harap isi link tiktok dengan valid`
+export const IndBukanTiktok = (command: string) => {
+	return `*「❗」* Mohon maaf kak, kakak tidak memasukkan link tiktok dengan benar harap isi link tiktok dengan valid, Jika kamu kebingungan ketik ${command} -help untuk mendapatkan info lebih lanjut.`
 }
-export const IndEmojiNotFound = () => {
-	return `*「❗」* Mohon maaf kak, Emoji yang ingin kakak buat sticker tidak ditemukan harap masukkan emoji dengan benar`
+export const IndEmojiNotFound = (command: string) => {
+	return `*「❗」* Mohon maaf kak, Emoji yang ingin kakak buat sticker tidak ditemukan harap masukkan emoji dengan benar. Jika kakak kebingungan / butuh batuan ketik ${command} -help`
 }
-export const IndHarapInputEMot = () => {
-	return `*「❗」* Mohon maaf kak harap masukkan emoji yang kakak ingin ubah menjadi sticker`
+export const IndHarapInputEMot = (command: string) => {
+	return `*「❗」* Mohon maaf kak harap masukkan emoji yang kakak ingin ubah menjadi sticker, Jika kakak bingung harap ketik ${command} -help`
 }
 export const IndTranslate = (value: ITranslateResponse ) => {
 	let Lang: languages | any = languages
@@ -1237,8 +1244,8 @@ export const IndTranslate = (value: ITranslateResponse ) => {
 export const IndTransErr = () => {
 	return `*「❗」* Mohon maaf kak, Bahasa yang kakak masukkan termasuk kedalam list bahasa`
 }
-export const IndTranslateMasuk = () => {
-	return `*「❗」* Mohon maaf kak,  harap masukkan text yang ingin kakak translate`
+export const IndTranslateMasuk = (Command: string) => {
+	return `*「❗」* Mohon maaf kak,  harap masukkan text yang ingin kakak translate. Jika kakak bingung ketik ${Command} --help`
 }
 export const IndToUrl = (data: ToUrlUguuse) => {
 	return `
@@ -1249,8 +1256,8 @@ export const IndToUrl = (data: ToUrlUguuse) => {
 export const ErrorToUrl = () => {
 	return `*「❗」* Mohon maaf kak, bot gagal menginput media untuk menjadikan url`
 }
-export const InputMedia = () => {
-	return `*「❗」* Mohon maaf kak, harap masukkan media yang ingin di ubah menjadi url`
+export const InputMedia = (Command: string) => {
+	return `*「❗」* Mohon maaf kak, harap masukkan media yang ingin di ubah menjadi url, jika kakak bingung ketik ${Command} -help`
 }
 export const IndItuNomerOwn = () => {
 	return `Itu ka nomer owner ku jangan di spam ya kak:v`
