@@ -1,7 +1,8 @@
 import got, { Response } from 'got'
-import cheerio, { CheerioAPI } from 'cheerio'
+import cheerio, { CheerioAPI, Element } from 'cheerio'
 import { LirikResult, LirikSearching, Azlirik } from '../../typings';
-import axios, { AxiosResponse } from "axios"
+import axios, { AxiosResponse } from "axios";
+import { UserAgent } from "../../functions/function"
 
 const MusicMatchReg: RegExp = /(?:http(?:s|):\/\/|)(?:www\.|)musixmatch.com/
 const getJudul: RegExp = /.\/(.)\/(.*)$/
