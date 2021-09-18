@@ -15,8 +15,8 @@ export class GroupCommands extends Searching {
     }
     public async Afk() {
         globalThis.CMD.on('group|afk <alasan>',  { event: ["afk <alasan>"], tag: "group"},['afk'], async (res: WAConnection, data: Commands) => {
-            const { from, sender, isGroupMsg, args, mess, groupMetadata, pushname } = data
-            if (!isGroupMsg) return this.Ra.reply(from,  BukanDalamGroup(), mess)
+            const { from, sender, isGroupMsg, args, mess, groupMetadata, pushname, Command } = data
+            if (!isGroupMsg) return this.Ra.reply(from,  BukanDalamGroup(Command), mess)
 			if (await this.database.checkAfk(sender || "")) return await this.Ra.reply(from,  indAfkDahNyala(), mess)
             const Format: { id: string; from: string; alasan: string; time: number } = {
                 id: sender + from,

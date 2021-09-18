@@ -1,5 +1,5 @@
 import { GroupGuards as GroupGuard} from ".";
-import { WAConnection, MessageType, proto, WAChat } from '@adiwajshing/baileys'
+import { WAConnection, MessageType, proto, WAChat, WAMetric, WANode } from '@adiwajshing/baileys'
 import { Commands } from '../typings'
 import { Client } from '../src/Client'
 import { ConnectMoongo } from '../database/mongoodb/main'

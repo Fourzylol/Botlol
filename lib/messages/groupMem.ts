@@ -141,8 +141,8 @@ export class groupMembers {
     }
     private delvote() {
         globalThis.CMD.on('voting|delvote',  { event: ["delvoting"], tag: "voting"},['delvote', 'deletevote', 'resetvote'], async (res: WAConnection, data: Commands) => {
-			const {  from, isGroupMsg, mess } = data
-            if (!isGroupMsg) return await res.sendMessage(from, BukanDalamGroup(), MessageType.extendedText, { quoted: mess })
+			const {  from, isGroupMsg, mess, Command } = data
+            if (!isGroupMsg) return await res.sendMessage(from, BukanDalamGroup(Command), MessageType.extendedText, { quoted: mess })
             const Check: VoteMap = result.get(from)
             if (!Check) return await res.sendMessage(from, IndSesiVotingGada(), MessageType.extendedText, { quoted: mess })
             await result.delete(from)
@@ -151,8 +151,8 @@ export class groupMembers {
     }
     private vote() {
         globalThis.CMD.on('voting|voting <alasan,time,tag/reply>',  { event: ["voting <alasan,time,tag/repl>"], tag: "voting"}, ['voting'], async (res: WAConnection, respon: Commands) => {
-			const { args, from, mentioned, sender, mess, isGroupMsg } = respon
-            if (!isGroupMsg) return await res.sendMessage(from, BukanDalamGroup(), MessageType.extendedText, { quoted: mess })
+			const { args, from, mentioned, sender, mess, isGroupMsg, Command } = respon
+            if (!isGroupMsg) return await res.sendMessage(from, BukanDalamGroup(Command), MessageType.extendedText, { quoted: mess })
             if (mentioned && mentioned[0] === undefined) return res.sendMessage(from, 'Harap tag seseorang', MessageType.text)
             let getRespon: string = args.join(' ').replace('@', '').replace(new RegExp(`${mentioned?.join(' ').replace('@s.whatsapp.net', '')}`, 'gi'), '')
             const Check: VoteMap = result.get(from)

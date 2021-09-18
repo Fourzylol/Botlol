@@ -5,6 +5,7 @@ import { WAConnection, MessageType } from '@adiwajshing/baileys'
 import { Commands, IgPostDown, IgReelsDown, IgTvDown, youtubeDlCore, YoutubeMP3PlaySer2, YoutubeMP4PlaySer2, FaceBookDown, TiktokDownloaders, Mussically } from '../typings';
 import {  InstaDownloader, mediafireDown, YtPlaymp3, YtPlaymp4, Ytplaymp3Server2, Ytplaymp4Server2, FacebookDown,  tiktokDownloader, Musically } from "../routers/api";
 import { IndIgPost, IndSuccesDownloader, IndIgReelsDown, IndIgTvDown,  IndIGDlInvalid, BukanIgDown, BukanUrl,  IndTunggu, IndMediaFire, BukanMediaFire, IndSizeBesar, IndInputLink,  IndInputLinkYt,  IndYtPlayMP4, IndYtPlayAudSer2, IndYtPlayVidSer2,  IndYtPlayMP3,  IndQuerryKosong, IndYoutubeKosong, IndFaceBookDown, IndFesbukErr, IndLinkFesbuk, IndFotoFb, IndTiktokDown,  IndTiktokErr, IndBukanTiktok, IndTungguDown, GaSuppotrFb,  IndBlomSupport   } from "../lang/ind";
+import { HelpDownloader, HelpTiktok, HelpFacebook, HelpYoutubeDown,  HelpMediaFire, HelpInstagramDown } from "../lang/help"
 import parsems, { Parsed } from "parse-ms";
 import { isUrl } from "../functions/function";
 
@@ -23,10 +24,11 @@ export class Downloader extends GroupData {
     }
 	private Downloaders () {
 		globalThis.CMD.on("Donwlodbro", { event: ["download <url>"], tag: "downloader"}, ["download", "downloader", "down"], async (res: WAConnection, data: Commands) => {
-			const { from, args, mess, bodyQuoted } = data;
+			const { from, args, mess, bodyQuoted, Prefix, Command } = data;
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpDownloader(Prefix), mess)
 			const getRespon: string | undefined = args[0] ? args.join(" ") : bodyQuoted ?? undefined
-			if (!getRespon) return this.Ra.reply(from, IndInputLink(), mess)
-			if (!isUrl(String(getRespon))) return this.Ra.reply(from, BukanUrl(), mess)
+			if (!getRespon) return this.Ra.reply(from, IndInputLink(Command), mess)
+			if (!isUrl(String(getRespon))) return this.Ra.reply(from, BukanUrl(Command), mess)
 			if (getRespon?.match(/(?:http(?:s|):\/\/|)(?:www\.|)tiktok.com\/@([-_0-9A-Za-z]{3,14})\/video\/([0-9]{8,50})(?:\?is_copy_url=0&is_from_webapp=v1&sender_device=pc&sender_web_id=(?:[0-9]{8,50}))|(?:http(?:s|):\/\/|)(?:vt\.tiktok\.com\/([-_0-9A-Za-z]{3,14}))/g)) {
 				this.Ra.reply(from,  IndTungguDown("Tiktok"), mess)
 				await  tiktokDownloader(getRespon).then(async (value : TiktokDownloaders) => {
@@ -64,7 +66,7 @@ export class Downloader extends GroupData {
 							break
 						}
 					}).catch (() => {
-						return void this.Ra.reply(from,  IndTiktokErr(), mess)
+						return void this.Ra.reply(from,  IndTiktokErr(Command), mess)
 					})
 				})
 			} else if (getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)facebook.com/gi)) {
@@ -113,7 +115,7 @@ export class Downloader extends GroupData {
 						})
 					})
 				} else {
-					if (!getRespon) return this.Ra.reply(from,  IndInputLinkYt(), mess)
+					if (!getRespon) return this.Ra.reply(from,  IndInputLinkYt(Command), mess)
 					this.Ra.reply(from,   IndTungguDown("Youtube Play"), mess)
 					await YtPlaymp3(getRespon).then(async (value: youtubeDlCore) => {
 						await this.Ra.sendImage(from, value.data.thumbnail ?? "", IndYtPlayMP3(value), mess)
@@ -135,14 +137,14 @@ export class Downloader extends GroupData {
 				let Process: number = Date.now()
 				await this.Ra.reply(from,  IndTungguDown("Mediafire"), mess)
 				await mediafireDown(getRespon).then(async (value: { link: string | undefined, size: string}) => {
-					if (!value.link) return void this.Ra.reply(from, BukanMediaFire(), mess)
+					if (!value.link) return void this.Ra.reply(from, BukanMediaFire(Command), mess)
 					await this.Ra.reply(from, IndMediaFire(value), mess)
 					if (value.size.match(/(mb|gb)/gi) && Number(value.size.replace(/[a-z]/gi, "")) > 75.00) return this.Ra.reply(from, IndSizeBesar(value.size, "75 MB", "MediaFire", String(value.link)))
 					await this.Ra.sendDocument(from, value.link, mess)
 					const Timer: Parsed = parsems(Date.now() - Process)
 					return void await this.Ra.reply(from, IndSuccesDownloader(String(Timer.hours + "Jam," + Timer.minutes + "Menit," + Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "MediaFire"), mess)
 				}).catch(() => {
-					return void this.Ra.reply(from, BukanMediaFire(), mess)
+					return void this.Ra.reply(from, BukanMediaFire(Command), mess)
 				})
 			} else if (getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)instagram.com/gi)) {
 				let Process: number = Date.now()
@@ -189,20 +191,21 @@ export class Downloader extends GroupData {
 						return void this.Ra.reply(from,  IndIGDlInvalid(), mess)
 					})
 				} else {
-					return void this.Ra.reply(from, BukanIgDown(), mess)
+					return void this.Ra.reply(from, BukanIgDown(Command), mess)
 				}
 			} else {
-				return void this.Ra.reply(from,  IndBlomSupport(), mess)
+				return void this.Ra.reply(from,  IndBlomSupport(Command), mess)
 			}
 		})
 	} 
 	private TiktokDown () {
-		globalThis.CMD.on("Toktok", { event: ["tiktok <url tiktok>", "tiktok (wm/nowm/musik) <url tiktok>"], tag: "downloader"}, ["tiktok", "tt"], async (res: WAConnection, data: Commands) => {
-			const { from, args, mess, bodyQuoted } = data;
+		globalThis.CMD.on("Toktok", { event: ["tiktok <url tiktok>", "tiktok (wm/nowm/musik) <url tiktok>"], tag: "downloader"}, ["tiktok", "tt", "tiktokdl"], async (res: WAConnection, data: Commands) => {
+			const { from, args, mess, bodyQuoted, Command, Prefix } = data;
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpTiktok(Prefix), mess)
 			const getRespon: string | undefined = args[0] ? args.join(" ") : bodyQuoted ?? undefined
-			if (!getRespon) return this.Ra.reply(from, IndInputLink(), mess)
-			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(), mess)
-			if (!getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)tiktok.com\/@([-_0-9A-Za-z]{3,14})\/video\/([0-9]{8,50})(?:\?is_copy_url=0&is_from_webapp=v1&sender_device=pc&sender_web_id=(?:[0-9]{8,50}))|(?:http(?:s|):\/\/|)(?:vt\.tiktok\.com\/([-_0-9A-Za-z]{3,14}))/g)) return this.Ra.reply(from, IndBukanTiktok(), mess)
+			if (!getRespon) return this.Ra.reply(from, IndInputLink(Command), mess)
+			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(Command), mess)
+			if (!getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)tiktok.com\/@([-_0-9A-Za-z]{3,14})\/video\/([0-9]{8,50})(?:\?is_copy_url=0&is_from_webapp=v1&sender_device=pc&sender_web_id=(?:[0-9]{8,50}))|(?:http(?:s|):\/\/|)(?:vt\.tiktok\.com\/([-_0-9A-Za-z]{3,14}))/g)) return this.Ra.reply(from, IndBukanTiktok(Command), mess)
 			this.Ra.reply(from,  IndTunggu(), mess)
 			await  tiktokDownloader(getRespon).then(async (value : TiktokDownloaders) => {
 				switch (true) {
@@ -239,19 +242,20 @@ export class Downloader extends GroupData {
 						break
 					}
 				}).catch (() => {
-					return void this.Ra.reply(from,  IndTiktokErr(), mess)
+					return void this.Ra.reply(from,  IndTiktokErr(Command), mess)
 				})
 			})
 		})
 	}
 	private FesBuk () {
 		globalThis.CMD.on("Fesbuk", { event: ["fbdl <url fb>"], tag: "downloader"}, ["fbdl", "facebook"], async (res:WAConnection, data: Commands) => {
-			const { from, args, mess, bodyQuoted } = data;
+			const { from, args, mess, bodyQuoted, Command, Prefix } = data;
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpFacebook(Prefix), mess)
 			const getRespon: string | undefined = args[0] ? args.join(" ") : bodyQuoted ?? undefined
-			if (!getRespon) return this.Ra.reply(from, IndInputLink(), mess)
-			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(), mess)
+			if (!getRespon) return this.Ra.reply(from, IndInputLink(Command), mess)
+			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(Command), mess)
 			if (getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)facebook.com\/photo\?([\.&=0-9A-Za-z]{14,50})/gi)) return this.Ra.reply(from, IndFotoFb(), mess)
-			if (!getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)facebook.com\/([0-9A-Za-z]{2,16})\/videos\/([0-9]{2,18})/gi)) return this.Ra.reply(from, IndLinkFesbuk(), mess)
+			if (!getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)facebook.com\/([0-9A-Za-z]{2,16})\/videos\/([0-9]{2,18})/gi)) return this.Ra.reply(from, IndLinkFesbuk(Command), mess)
 			this.Ra.reply(from,  IndTunggu(), mess)
 			await FacebookDown(getRespon).then(async (value: FaceBookDown) => {
 				await this.Ra.sendImage(from, value.thumbnail, IndFaceBookDown(value), mess)
@@ -262,12 +266,13 @@ export class Downloader extends GroupData {
 		})
 	}
 	private YtDl () {
-		globalThis.CMD.on("YtDl", { event: ["ytdl <url yt>"], tag: "downloader"}, ["ytdl"], async (res: WAConnection, data: Commands) => {
-			const { from, args, mess, bodyQuoted } = data
+		globalThis.CMD.on("YtDl", { event: ["ytdl <url yt>"], tag: "downloader"}, ["ytdl", "youtube"], async (res: WAConnection, data: Commands) => {
+			const { from, args, mess, bodyQuoted, Command, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpYoutubeDown(Prefix), mess)
 			const getRespon: string | undefined = args[0] ? args.join(" ") : bodyQuoted ?? undefined
-			if (!getRespon) return this.Ra.reply(from, IndInputLink(), mess)
-			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(), mess)
-			if (!getRespon.match(/(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/)) return this.Ra.reply(from,  IndInputLinkYt(), mess)
+			if (!getRespon) return this.Ra.reply(from, IndInputLink(Command), mess)
+			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(Command), mess)
+			if (!getRespon.match(/(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/)) return this.Ra.reply(from,  IndInputLinkYt(Command), mess)
 			if (args[0] && args[0].toLocaleLowerCase() === "mp3") {
 				this.Ra.reply(from,  IndTunggu(), mess)
 				await YtPlaymp3(getRespon.slice(4)).then(async (value: youtubeDlCore) => {
@@ -324,31 +329,33 @@ export class Downloader extends GroupData {
 	}
 	private MediaFireDown () {
 		globalThis.CMD.on("MediaFire", { event: ["mediafire <url mediafire>"], tag: "downloader"}, ["mediafire"], async (res: WAConnection, data: Commands) => {
-			const { from, mess, args, bodyQuoted } = data
+			const { from, mess, args, bodyQuoted, Command, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from,  HelpMediaFire(Prefix), mess)
 			const getRespon: string | undefined = args[0] ? args.join(" ") : bodyQuoted ?? undefined
-			if (!getRespon) return this.Ra.reply(from, IndInputLink(), mess)
-			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(), mess)
-			if (!getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)mediafire.com\/file\/([-_0-9A-Za-z]{4,18})/gi)) return this.Ra.reply(from, BukanMediaFire(), mess)
+			if (!getRespon) return this.Ra.reply(from, IndInputLink(Command), mess)
+			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(Command), mess)
+			if (!getRespon.match(/(?:http(?:s|):\/\/|)(?:www\.|)mediafire.com\/file\/([-_0-9A-Za-z]{4,18})/gi)) return this.Ra.reply(from, BukanMediaFire(Command), mess)
 			let Process: number = Date.now()
 			await this.Ra.reply(from,  IndTunggu(), mess)
 			await mediafireDown(getRespon).then(async (value: { link: string | undefined, size: string}) => {
-				if (!value.link) return void this.Ra.reply(from, BukanMediaFire(), mess)
+				if (!value.link) return void this.Ra.reply(from, BukanMediaFire(Command), mess)
 				await this.Ra.reply(from, IndMediaFire(value), mess)
 				if (value.size.match(/(mb|gb)/gi) && Number(value.size.replace(/[a-z]/gi, "")) > 75.00) return this.Ra.reply(from, IndSizeBesar(value.size, "75 MB", "MediaFire", String(value.link)))
 				await this.Ra.sendDocument(from, value.link, mess)
 				const Timer: Parsed = parsems(Date.now() - Process)
 				return void await this.Ra.reply(from, IndSuccesDownloader(String(Timer.hours + "Jam," + Timer.minutes + "Menit," + Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "MediaFire"), mess)
 			}).catch(() => {
-				return void this.Ra.reply(from, BukanMediaFire(), mess)
+				return void this.Ra.reply(from, BukanMediaFire(Command), mess)
 			})
 		})
 	}
 	private IgDownloader () {
 		globalThis.CMD.on("igdownloader", { event: ["igdl <url instagram>"], tag: "downloader" }, ["instagram", "igdown", "igdl", "instadown", "insta"], async (res: WAConnection, data: Commands) => {
-			const { from, mess, args, bodyQuoted } = data
+			const { from, mess, args, bodyQuoted, Command, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpInstagramDown(Prefix), mess)
 			const getRespon: string | undefined = args[0] ? args.join(" ") : bodyQuoted ?? undefined
-			if (!getRespon) return this.Ra.reply(from, IndInputLink(), mess)
-			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(), mess)
+			if (!getRespon) return this.Ra.reply(from, IndInputLink(Command), mess)
+			if (!isUrl(getRespon)) return this.Ra.reply(from, BukanUrl(Command), mess)
 			let Process: number = Date.now()
 			const RegPost: RegExpExecArray | null= /(?:http(?:s|):\/\/|)(?:www\.|)instagram.com\/p\/([-_0-9A-Za-z]{5,18})/gi.exec(getRespon)
 			const RegReels: RegExpExecArray | null = /(?:http(?:s|):\/\/|)(?:www\.|)instagram.com\/reel\/([-_0-9A-Za-z]{5,18})/gi.exec(getRespon)
@@ -393,7 +400,7 @@ export class Downloader extends GroupData {
 					return void this.Ra.reply(from,  IndIGDlInvalid(), mess)
 				})
 			} else {
-				return void this.Ra.reply(from, BukanIgDown(), mess)
+				return void this.Ra.reply(from, BukanIgDown(Command), mess)
 			}
 		})
 	}

@@ -152,19 +152,23 @@ export class Searching extends Downloader {
 			await  Pinterest(args.join(" ")).then(async (value: string[]) => {
 				if (!value[0]) return void this.Ra.reply(from,  IndGoogleKosong(), mess)
 				for (let result of value) {
-					if (count > Jumlah) {
-						const Timer = parsems(Date.now() - Time)
-						await this.Ra.reply(from,IndSuccesSearch(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "Pinterest"))
-						break;
-					} else  if (Jumlah >= value.length) {
-						const Timer: Parsed = parsems(Date.now() - Time)
-						await this.Ra.reply(from,IndSuccesSearch(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "Pinterest"))
-						break;
-					} else {
-						const Media: Buffer =  await Buffer(result)
-						const Thumb: any =  await compressImage(Media)
-						await res.sendMessage(from, Media, MessageType.image, { quoted: mess, thumbnail: Thumb})
-						count++
+					try {
+						if (count > Jumlah) {
+							const Timer = parsems(Date.now() - Time)
+							await this.Ra.reply(from,IndSuccesSearch(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "Pinterest"))
+							break;
+						} else  if (Jumlah >= value.length) {
+							const Timer: Parsed = parsems(Date.now() - Time)
+							await this.Ra.reply(from,IndSuccesSearch(String(Timer.seconds + " Detik, " + Timer.milliseconds + " Miliseconds"), "Pinterest"))
+							break;
+						} else {
+							const Media: Buffer =  await Buffer(result)
+							const Thumb: any =  await compressImage(Media)
+							await res.sendMessage(from, Media, MessageType.image, { quoted: mess, thumbnail: Thumb})
+							count++
+						}
+					} catch (err) {
+
 					}
 				}
 			})

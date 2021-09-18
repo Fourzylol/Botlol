@@ -4,6 +4,7 @@ import { WAConnection, MessageType, GroupSettingChange, WAGroupParticipant, WAPr
 import { Commands } from '../typings'
 import { ConnectMoongo } from '../database/mongoodb/main'
 import { BotGaAdmin, BukanDalamGroup, UserDalamGroup, SuccesAdd, AddHarapTagSeseorang, UserGadaDalamGroup, isOwnerGroupNokick, kickSucces, Admindia, ButakahLinkGc, IndLinkGroup, PilihBukatutup, SuccesOpenCloseGc, TagOrReply, PromoteSuccess, PromoteDiaAdmin, DemoteSuccess, DemoteBukanAdmin, GagalUpdatePP, SuccesUpdatePP, SuccesSetName, SuccesSetDesk, IndListOn, IndGadaOn, IndTagall, IndRevoked, IndBukanSgif } from '../lang/ind'
+import { HelpAddGroup, HelpLinkGroup, HelpRevoked, HelpGroupOT, HelpPromote, HelpDemote, HelpSetppGc, HelpSetNameGc, HelpSetBioGc  } from "../lang/help";
 import { Toimg } from '../tools'
 import { RandomName, Tunggu } from '../functions/function'
 import * as fs from 'fs'
@@ -30,11 +31,12 @@ export class GroupData extends MusicHandling {
     }
     protected AddGroup() {
 		globalThis.CMD.on('admingc|add/masuk <tag/reply>',  { event: ["add <tag/reply>", "masuk <tag/reply>"], tag: "groupadmins"},['add', 'masuk'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, isGroupMsg, mess, mentioned, groupMember, isOwner, groupMetadata } = data
+			const { isBotAdmins, from, isGroupAdmins, isGroupMsg, mess, mentioned, groupMember, isOwner, groupMetadata, args, Command } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpAddGroup, mess)
             if (!isOwner) return
-			if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
+			if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
 			if (!isGroupAdmins) return
-            if (!isBotAdmins) return  this.Ra.reply(from, BotGaAdmin(), mess)
+            if (!isBotAdmins) return  this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (mentioned && mentioned[0] !== undefined) {
 				if (groupMember !== null ? groupMember?.map((value) => value.jid).includes(mentioned[0]) : true) return this.Ra.reply(from, UserDalamGroup(), mess)
 				await res.groupAdd(from, [mentioned[0]])
@@ -46,10 +48,11 @@ export class GroupData extends MusicHandling {
 	}
     protected kickGroup() {
 		globalThis.CMD.on('admingc|kick/sepak <tag/reply>',  { event: ["kick <tag/reply>", "sepak <tag/reply>"], tag: "groupadmins"},['kick', 'tendang', 'sepak'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, isGroupMsg, mess, mentioned, groupMember, isOwner, ownerGroup, sender } = data
+			const { isBotAdmins, from, isGroupAdmins, isGroupMsg, mess, mentioned, groupMember, isOwner, ownerGroup, sender, args, Command } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpAddGroup, mess)
             if (!isOwner) return
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (!isGroupAdmins) return
             if (groupMember !== null ? !groupMember?.map((value) => value.jid).includes(mentioned !== undefined ? mentioned[0] : ''): true) return this.Ra.reply(from, UserGadaDalamGroup(), mess)
             if (mentioned && mentioned[0] !== undefined) {
@@ -67,9 +70,10 @@ export class GroupData extends MusicHandling {
 }
     protected linkgroup() {
         globalThis.CMD.on('admingc|linkgc',  { event: ["linkgroup"], tag: "groupadmins"}, ['linkgroup', 'linkgc', 'linkgrup'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, groupMetadata, mess, isGroupMsg, isOwner } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+			const { isBotAdmins, from, isGroupAdmins, groupMetadata, mess, isGroupMsg, isOwner, args, Prefix, Command } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpLinkGroup(Prefix), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             let LinkGc: string | undefined = (await Object.keys(groupMetadata !== null ? groupMetadata : []).includes('desc')) ? groupMetadata?.desc : ''
 			if (isGroupAdmins || isOwner) {
 				if (groupMetadata == null) return
@@ -81,9 +85,10 @@ export class GroupData extends MusicHandling {
     }
     protected revokedLink() {
 		globalThis.CMD.on('admingc|revoke',  { event: ["revoked"], tag: "groupadmins"},['revoke', 'revoked'], async (res: WAConnection, data: Commands) => {
-			const { isGroupMsg, isBotAdmins, isGroupAdmins, isOwner, from, mess, groupMetadata } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+			const { isGroupMsg, isBotAdmins, isGroupAdmins, isOwner, from, mess, groupMetadata, Command, args, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpRevoked (Prefix), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (!isOwner && !isGroupAdmins) return
             await res.revokeInvite(from)
 			if (!groupMetadata) return
@@ -92,12 +97,13 @@ export class GroupData extends MusicHandling {
     }
     protected OpenCloseGc() {
 		globalThis.CMD.on('admingc|group <open/close>',  { event: ["group <open/close>"], tag: "groupadmins"},['group', 'grup'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner, groupMetadata } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner, groupMetadata, Command, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpGroupOT(Prefix), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (!isOwner && !isGroupAdmins) return
             let BukaTutup: boolean | null = /^(open|buka)/i.test(args[0]) ? false : /^(close|tutup)/i.test(args[0]) ? true : null
-            if (BukaTutup == null) return await this.Ra.reply(from, PilihBukatutup(), mess)
+            if (BukaTutup == null) return await this.Ra.reply(from, PilihBukatutup(Command), mess)
 			if (!groupMetadata) return
             await res.groupSettingChange(from, GroupSettingChange.messageSend, BukaTutup)
             return void await this.Ra.reply(from, SuccesOpenCloseGc(BukaTutup, groupMetadata), mess)
@@ -105,9 +111,10 @@ export class GroupData extends MusicHandling {
     }
     protected Promote() {
 		globalThis.CMD.on('admingc|promote <tag/reply>',  { event: ["promote <tag/reply>"], tag: "groupadmins"},['promote', 'getadmin'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, mentioned, isOwner, sender, groupMetadata } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, mentioned, isOwner, sender, groupMetadata, Command, args, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.sendTextWithMentions(from, HelpPromote(Prefix), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (!isOwner && !isGroupAdmins) return
             if (mentioned && mentioned[0] == undefined && isOwner) {
 				await res.groupMakeAdmin(from, [sender || ''])
@@ -123,9 +130,10 @@ export class GroupData extends MusicHandling {
     }
     protected Demote() {
         globalThis.CMD.on('admingc|demote <tag/reply>',  { event: ["demote <tag/reply>"], tag: "groupadmins"},['demote'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, mentioned, isOwner, sender, groupMetadata } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, mentioned, isOwner, sender, groupMetadata, Command, args, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.sendTextWithMentions(from, HelpDemote(Prefix), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (!isOwner && !isGroupAdmins) return
             if (mentioned && mentioned[0] == undefined) {
 				await this.Ra.reply(from, TagOrReply(), mess)
@@ -139,9 +147,10 @@ export class GroupData extends MusicHandling {
     }
     protected setPPGc() {
 		globalThis.CMD.on('admingc|setppgc <img/sticker',  { event: ["setppgc"], tag: "groupadmins"},['setppgc', 'setppgroup'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, media, isQuotedImage, isGambar, isQuotedSticker, isOwner } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, media, isQuotedImage, isGambar, isQuotedSticker, isOwner, Command, args, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpSetppGc(Prefix), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (!isOwner && !isGroupAdmins) return
             if (media == null) return
             if (isGambar || isQuotedImage) {
@@ -163,19 +172,21 @@ export class GroupData extends MusicHandling {
     }
     protected setNameGc() {
         globalThis.CMD.on('admingc|setnamegc <text>',  { event: ["setnamegc <text>"], tag: "groupadmins"},['setnamagc', 'setnamegc', 'setnamegrup', 'setnamagroup'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner, Command , Prefix} = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpSetNameGc(Prefix), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (!isOwner && !isGroupAdmins) return
 			await res.groupUpdateSubject(from, args.join(' ') || '')
             await this.Ra.reply(from, SuccesSetName(args.join(' ') || ''))
 		})
     }
     protected setBioGc() {
-        globalThis.CMD.on('admingc|setbiogc <text>',  { event: ["setbiogc"], tag: "groupadmins"},['setdesk', 'setdeskgc', 'setdesc'], async (res: WAConnection, data: Commands) => {
-			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
-            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(), mess)
+        globalThis.CMD.on('admingc|setbiogc <text>',  { event: ["setbiogc"], tag: "groupadmins"},['setdesk', 'setdeskgc', 'setdesc', "setbiogc"], async (res: WAConnection, data: Commands) => {
+			const { isBotAdmins, from, isGroupAdmins, mess, isGroupMsg, args, isOwner, Command, Prefix } = data
+			if (/^(?:-|--)(help)$/i.test(args[0])) return this.Ra.reply(from, HelpSetBioGc(Prefix), mess)
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
+            if (!isBotAdmins) return this.Ra.reply(from, BotGaAdmin(Command), mess)
             if (!isOwner && !isGroupAdmins) return
             await res.groupUpdateDescription(from, args.join(' ') || '')
             await this.Ra.reply(from, SuccesSetDesk(), mess)
@@ -201,8 +212,8 @@ export class GroupData extends MusicHandling {
     }
     protected Tagall() {
         globalThis.CMD.on('admingc|tagall',  { event: ["tagall"], tag: "groupadmins"},['tagall', 'tagal'], async (res: WAConnection, data: Commands) => {
-            const { from, groupMember, isGroupMsg, isGroupAdmins, mess, isOwner } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
+            const { from, groupMember, isGroupMsg, isGroupAdmins, mess, isOwner, Command } = data
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
             if (!isOwner && !isGroupAdmins) return
             const Members: string[] | undefined = groupMember?.map((value) => value.jid)
             return void (await this.Ra.sendTextWithMentions(from, IndTagall(Members), mess))
@@ -210,8 +221,8 @@ export class GroupData extends MusicHandling {
     }
     protected ListOnline() {
         globalThis.CMD.on('admingc|listonline',  { event: ["listonline"], tag: "groupadmins"},['listonline', 'online'], async (res: WAConnection, data: Commands) => {
-			const { from, isGroupAdmins, isGroupMsg, mess, isOwner } = data
-            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(), mess)
+			const { from, isGroupAdmins, isGroupMsg, mess, isOwner, Command } = data
+            if (!isGroupMsg) return this.Ra.reply(from, BukanDalamGroup(Command), mess)
             if (!isOwner && !isGroupAdmins) return
             try {
                 let result: { id: string; nama: string | undefined }[] = []
