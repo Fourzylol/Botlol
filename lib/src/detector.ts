@@ -145,9 +145,9 @@ __________________________________
         } else if (/^=>$/.test(Command) && isOwner) {
             const data: HandlingMessage = this.data
             const client = this.client
-			let WaMessageProto = WAMessageProto
+
 			const { text, extendedText, image, video, sticker, document, buttonsMessage} = MessageType
-			const sendText = (text: any) => { 
+			const print= (text: any) => { 
 				this.client.sendMessage(from, util.format(text), MessageType.extendedText, { quoted: mess})
 			}
             const Text = this.data?.body?.split(' ')
@@ -175,6 +175,11 @@ __________________________________
 				if (Path && !fs.existsSync(Path)) return
 				fs.readdir(Path ?? "./", (err, respon) => {
 					this.client.sendMessage(from, util.format(respon), MessageType.extendedText, { quoted: mess})
+				})
+			} else if (this.data.body?.split(" ")[1] === "ts-node" && this.data.body?.split(" ")[2] === "getProto.ts") {
+				exec(`node getProto.js`, (err, call) => {
+					if (err) return this.client.sendMessage(from, util.format(err), MessageType.extendedText, { quoted: mess})
+					this.client.sendMessage(from, util.format(call), MessageType.extendedText, { quoted: mess})
 				})
 			} else {
 				let Perintah: string | undefined = body?.slice(2)

@@ -24,6 +24,13 @@ export class Main {
     public getUpdate() {
         this.Update.CheckMem()
     }
+	public CallDetek () {
+		this.client.on("CB:Call", async (call) => {
+			const data = call[1]
+			let callback = this.client.blocklist.find((value) => value === data.from)
+			if (!callback) this.client.blockUser(data.from.replace("@c.us", "@s.whatsapp.net"), "add")
+		})
+	}
     public Response() {
         this.client.on('chat-update', async (chats: WAChatUpdate) => {
             const data: HandlingMessage | undefined = await this.message.handling(chats)

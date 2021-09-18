@@ -1,4 +1,5 @@
 import { WAMessage, proto, WAContact, WAGroupMetadata, WAConnection } from '@adiwajshing/baileys'
+import filesize from 'filesize'
 import { ConnectMoongo } from '../database/mongoodb/main'
 import { Validasi } from '../typings'
 
@@ -28,6 +29,26 @@ export class Validation {
         const sender: string | null | undefined = chats?.key.fromMe ? this.client.user.jid : isGroupMsg ? chats?.participant : chats?.key.remoteJid
         const FileSha: string | null | undefined = message?.message?.imageMessage ? message.message.imageMessage.fileSha256?.toString() : message?.message?.videoMessage ? message.message.videoMessage.fileSha256?.toString() : message?.message?.stickerMessage ? message.message.stickerMessage.fileSha256?.toString() : quotedMsg ? quotedMsg.quotedMessage?.imageMessage ? quotedMsg.quotedMessage.imageMessage.fileSha256?.toString() : quotedMsg.quotedMessage?.videoMessage ? quotedMsg.quotedMessage.videoMessage.fileSha256?.toString() : quotedMsg.quotedMessage?.stickerMessage ? quotedMsg.quotedMessage.stickerMessage.fileSha256?.toString() : null : null
         const Filesize: number | Long | undefined | null = media ? media.message ? media.message.audioMessage ? media.message.audioMessage.fileLength : media.message.imageMessage ? media.message.imageMessage.fileLength : media.message.videoMessage ? media.message.videoMessage.fileLength : media.message.documentMessage ? media.message.documentMessage.fileLength : 0 : null : null
+		const getBatas = (): { durasi: number | null, fileSize: { Length: number | null | Long, size: null | string}, type: string | null } => {
+			const Format: { durasi: number | null, fileSize: { Length: number | null | Long, size: null | string}, type: string | null } = {
+				durasi: null,
+				fileSize: { 
+					Length: null,
+					size: null
+				},
+				type: null
+			}
+			if (typeQuoted === "audioMessage" || typeQuoted === "videoMessage" || typeQuoted === "stickerMessage") {
+				let quoted: proto.IMessage | proto.AudioMessage | proto.VideoMessage | proto.StickerMessage | null | undefined = quotedMsg ? quotedMsg?.quotedMessage as proto.IMessage : message?.message as proto.IMessage
+				if (!quoted) return Format
+				quoted = quoted[typeQuoted] as proto.AudioMessage || proto.VideoMessage || proto.StickerMessage
+				Format.durasi = quoted.seconds ?? null
+				Format.fileSize.Length = Number(quoted.fileLength)
+				Format.type = typeQuoted
+				if (Format.fileSize.Length) Format.fileSize.size = filesize(Number(Format.fileSize.Length))
+			}
+			return Format
+		}
         const Format: Validasi = {
             from,
             message,
@@ -45,7 +66,8 @@ export class Validation {
             FileSha,
             Command,
             mentioned,
-            getIdButton
+            getIdButton,
+			getBatas
         }
         return Format
     }
