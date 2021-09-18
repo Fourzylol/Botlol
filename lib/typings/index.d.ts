@@ -14,4 +14,5 @@ export * from "./playstore";
 export * from "./youtube";
 export * from "./facebook";
 export * from "./Joox";
-export * from "./berita"
+export * from "./berita";
+export * from "./bmkg";
