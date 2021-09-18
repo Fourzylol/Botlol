@@ -782,6 +782,13 @@ export const IndAzLirik = (result: Azlirik) => {
 
   ${result.lirik}`
 }
+export const IndLirikIndo = (result:  { judul: string, lirik: string}) => {
+    return `	ㅤㅤㅤㅤㅤ  *「 LIRIK LAGU 」*
+
+*📚 Judul :* ${result.judul}
+
+  ${result.lirik}`
+}
 export const LirikGada = () => {
 	let kata: string[] = [
 		`*❌* Maaf kak lirik lagu yang anda cari tidak ditemukan`,

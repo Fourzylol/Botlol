@@ -14,6 +14,7 @@ export const HelpToUrl = (prefix: string) => {
 *-* Video
 *-* Document
 *-* Audio
+*-* Sticker
 
 *Perintah terkait*: (Perintah terkait ini kamu juga bisa menggunakan command lain)
 
@@ -749,7 +750,7 @@ export const HelpGroupOT = (prefix: string) => {
 
 *NOTES :*
 
-- _Fitur ini Berguna jika kamu ingin membuka atau menutup group anda
+- _Fitur ini Berguna jika kamu ingin membuka atau menutup group anda_
 
 - _Fitur ini berfungsi jika kamu admin group dan bot menjadi admin group_
 
@@ -760,4 +761,164 @@ export const HelpGroupOT = (prefix: string) => {
 - _Jika tetap melanggar bot tidak segan memblokir nomer anda dan melakukan banned_
 
 - _Perintah terkait Adalah command yang saling berhubungan beberapa tidak dimasukkan kedalam menu_`
+}
+export const HelpPromote = (prefix: string) => {
+	return `Fitur ini Berfungsi jika admin ingin menaikkan jabatan member
+
+*Contoh hasil :*
+
+*-* Bot akan menaikkan jabatan member yang di tag/reply
+
+*Contoh Penggunaan :* 
+
+*-* ${prefix}promote @33753045534 (tag member)
+*-* ${prefix}promote (reply member)
+
+*Perintah terkait*: (Perintah terkait ini kamu juga bisa menggunakan command lain)
+
+*-* ${prefix}promote
+
+*NOTES :*
+
+- _Fitur ini Berguna jika kamu ingin menaikkan jabatan member_
+
+- _Fitur ini berfungsi jika kamu admin group dan bot menjadi admin group_
+
+- _Fitur ini dapat di gunakan oleh semua orang jika bot aktif_
+
+- _*DILARANG* menggunakan perintah ini untuk pornograpi/rasisme/yang berkaitan dengan sesuatu yang bersifat sensitif atau sesuatu yang bersifat kejahatan_
+
+- _Jika tetap melanggar bot tidak segan memblokir nomer anda dan melakukan banned_
+
+- _Perintah terkait Adalah command yang saling berhubungan beberapa tidak dimasukkan kedalam menu`
+}
+export const HelpDemote = (prefix: string) => {
+	return `Fitur ini Berfungsi jika admin ingin menurunkan jabatan member
+
+*Contoh hasil :*
+
+*-* Bot akan menurunkan jabatan member yang di tag/reply
+
+*Contoh Penggunaan :* 
+
+*-* ${prefix}demote @33753045534 (tag member)
+*-* ${prefix}demote (reply member)
+
+*Perintah terkait*: (Perintah terkait ini kamu juga bisa menggunakan command lain)
+
+*-* ${prefix}demote
+
+*NOTES :*
+
+- _Fitur ini Berguna jika kamu ingin menurunkan jabatan member_
+
+- _Fitur ini berfungsi jika kamu admin group dan bot menjadi admin group_
+
+- _Fitur ini dapat di gunakan oleh semua orang jika bot aktif_
+
+- _*DILARANG* menggunakan perintah ini untuk pornograpi/rasisme/yang berkaitan dengan sesuatu yang bersifat sensitif atau sesuatu yang bersifat kejahatan_
+
+- _Jika tetap melanggar bot tidak segan memblokir nomer anda dan melakukan banned_
+
+- _Perintah terkait Adalah command yang saling berhubungan beberapa tidak dimasukkan kedalam menu`
+}
+export const HelpSetppGc = (prefix: string) => {
+	return `Fitur ini Berfungsi jika admin mengubah foto profil group
+
+*Contoh hasil :*
+
+*-* Bot akan mengubah Foto Profil group
+
+*Contoh Penggunaan :* 
+
+*-* ${prefix}setppgc (kirim gambar beserta caption)
+*-* ${prefix}setppgc (reply gambar/sticker Image berserta caption)
+
+*Perintah terkait*: (Perintah terkait ini kamu juga bisa menggunakan command lain)
+
+*-* ${prefix}setppgc
+*-* ${prefix}setppgroup
+
+*Media support :*
+
+*-* Gambar
+*-* Sticker (Tidak support sticker gif)
+
+*NOTES :*
+
+- _Fitur ini Berguna jika kamu ingin mengubah foto profil group_
+
+- _Fitur ini berfungsi jika kamu admin group dan bot menjadi admin group_
+
+- _Fitur ini dapat di gunakan oleh semua orang jika bot aktif_
+
+- _*DILARANG* menggunakan perintah ini untuk pornograpi/rasisme/yang berkaitan dengan sesuatu yang bersifat sensitif atau sesuatu yang bersifat kejahatan_
+
+- _Jika tetap melanggar bot tidak segan memblokir nomer anda dan melakukan banned_
+
+- _Perintah terkait Adalah command yang saling berhubungan beberapa tidak dimasukkan kedalam menu`
+}
+export const HelpSetNameGc = (prefix: string) => {
+	return `Fitur ini Berfungsi jika admin ingin mengubah nama group
+
+*Contoh hasil :*
+
+*-* Bot akan mengubah nama group sesuai yang di tentukan admin
+
+*Contoh Penggunaan :* 
+
+*-* ${prefix}setnamegc Ayam Hamil
+
+*Perintah terkait*: (Perintah terkait ini kamu juga bisa menggunakan command lain)
+
+*-* ${prefix}setnamegc
+*-* ${prefix}setnamagc
+*-* ${prefix}setnamegrup
+*-* ${prefix}setnamagroup
+
+*NOTES :*
+
+- _Fitur ini Berguna jika kamu ingin mengubah nama group anda_
+
+- _Fitur ini berfungsi jika kamu admin group dan bot menjadi admin group_
+
+- _Fitur ini dapat di gunakan oleh semua orang jika bot aktif_
+
+- _*DILARANG* menggunakan perintah ini untuk pornograpi/rasisme/yang berkaitan dengan sesuatu yang bersifat sensitif atau sesuatu yang bersifat kejahatan_
+
+- _Jika tetap melanggar bot tidak segan memblokir nomer anda dan melakukan banned_
+
+- _Perintah terkait Adalah command yang saling berhubungan beberapa tidak dimasukkan kedalam menu`
+}
+export const HelpSetBioGc = (prefix: string) => {
+	return `Fitur ini Berfungsi jika admin ingin mengubah Bio group
+
+*Contoh hasil :*
+
+*-* Bot akan mengubah Bio group sesuai yang di tentukan admin
+
+*Contoh Penggunaan :* 
+
+*-* ${prefix}setbiogc Paus Lus
+
+*Perintah terkait*: (Perintah terkait ini kamu juga bisa menggunakan command lain)
+
+*-* ${prefix}setbiogc
+*-* ${prefix}setdesc
+*-* ${prefix}setdeskgc
+*-* ${prefix}setdesk
+
+*NOTES :*
+
+- _Fitur ini Berguna jika kamu ingin mengubah bio group anda_
+
+- _Fitur ini berfungsi jika kamu admin group dan bot menjadi admin group_
+
+- _Fitur ini dapat di gunakan oleh semua orang jika bot aktif_
+
+- _*DILARANG* menggunakan perintah ini untuk pornograpi/rasisme/yang berkaitan dengan sesuatu yang bersifat sensitif atau sesuatu yang bersifat kejahatan_
+
+- _Jika tetap melanggar bot tidak segan memblokir nomer anda dan melakukan banned_
+
+- _Perintah terkait Adalah command yang saling berhubungan beberapa tidak dimasukkan kedalam menu`
 }
