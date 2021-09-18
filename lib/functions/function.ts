@@ -123,7 +123,7 @@ export async function AddSticker(Key: proto.WebMessageInfo, from: string, FileSh
 }
 // SUMBER
 // https://github.com/thiennq/fake-user-agent
-// Biar ga banyakin modol
+//
 export function UserAgent (): string {
 	let UA: string[] = [
 		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
