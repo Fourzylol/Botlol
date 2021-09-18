@@ -44,6 +44,65 @@ export async function LirikLagu(judul: string): Promise<LirikResult | undefined>
 		}).catch((err) => reject(new Error(err)))
     })
 }
+export async function GetLirikIndo (url: string): Promise <{ judul: string, lirik: string}> {
+	return new Promise (async (resolve, reject) => {
+		let RegLirikIndo: RegExpExecArray | null=  /(?:http(?:s|):\/\/|)(?:www\.|)liriklaguindonesia\.net\/([-_0-9A-Za-z]{1,80})(.htm)/gi.exec(url)
+		try {
+			if (!RegLirikIndo) return reject(new Error("Invalid Url"))
+			const Data: AxiosResponse = await axios({
+				url: RegLirikIndo[0],
+				method: "GET",
+				headers: {
+					 "User-Agent": UserAgent()
+				}
+			})
+			const $$: CheerioAPI = cheerio.load(Data.data)
+			const Format: { judul: string, lirik: string} = {
+				judul: $$("#site-content > article > header > h1").text().trim(),
+				lirik: $$("#site-content > article > div > blockquote").text().trim()
+			}
+			return resolve(Format)
+		} catch (err) {
+			return reject(new Error(String(err)))
+		}
+	})
+}
+export async function LirikIndo (judul: string): Promise <{ judul: string, lirik: string}> {
+	return new Promise (async (resolve, reject) => {
+		await LirikSearchIndo(judul).then(async (value: { url: string, title: string }[]) => {
+			await GetLirikIndo(value[0].url).then((respon: { judul: string, lirik: string}) => {
+				return resolve(respon)
+			}).catch((err) => reject(new Error(err)))
+		}).catch((err) => reject(new Error(err)))
+	})
+}
+export async function LirikSearchIndo (judul: string): Promise <{ url: string, title: string }[]> {
+	return new Promise (async (resolve, reject) => {
+		try {
+			const data: AxiosResponse = await axios({
+				url: "https://liriklaguindonesia.net/?s=" + encodeURI(judul),
+				method: "GET",
+				headers: {
+					 "User-Agent": UserAgent()
+					}
+				})
+			const $: CheerioAPI = cheerio.load(data.data)
+			let Obj: { url: string, title: string }[] = []
+			$("#posts > ul").each(function (hari: number, ini: Element) {
+				$(ini).find("li").each(function (cinta_ini: number, kadang_kadang_tak_ada_logika_ilusi_sebuah_hasrat_dalam_hati:  Element) {
+					let url = $(kadang_kadang_tak_ada_logika_ilusi_sebuah_hasrat_dalam_hati).find("a").attr("href")
+					let title = $(kadang_kadang_tak_ada_logika_ilusi_sebuah_hasrat_dalam_hati).find("a > h2.title > span").text().trim()
+					if (!title) return
+					if (!url) return
+					Obj.push({ url, title })
+				})
+			})
+			return resolve(Obj)
+		} catch (err) {
+			return reject(new Error(String(err)))
+		}
+	})
+}
 export async function LirikServer2 (judul: string): Promise <{ title: string, artis: string, lirik: string } > {
 	return new Promise (async (resolve, reject) => {
 		try {
