@@ -20,87 +20,12 @@
 
 ---
 
-### *_Welcome to Ra Bot_*
+### *_New base moved click the link below_*
 
 ---
-
-
-## *_Requirements_*
-
-* [Node.js]
-* [Git]
-* [FFmpeg]
-* [Libwebp]
-* [Image Magic]
-* [MONGO DB]
-* [Big Saran pake Visual Studio full theme 😎 biar elite]
-
-# Install
-
-
-### MONGO DB
-
-* Create your Mongo Db account [`Mongo DB`](https://www.mongodb.com/)
-* Make sure you get your db Url Example is at [`click here`](https://github.com/rayyreall/Whatsapp_Bot/blob/master/.env)
-* Replace with your mongodb Url that you got on the previous mongodb web
-* [❗] Make sure you fill in the URL correctly Otherwise the bot will not run
-
----
-### WINDOWS / VPS / RDP USER
-* Download & Install Git [`Git`](https://git-scm.com/downloads)
-* Donwload & Install NodeJS [`NodeJS`](https://nodejs.org/en/download)
-* Download & Install & Path FFmpeg [`FFmpeg`](https://ffmpeg.org/)
-* Download & Install ImageMagick [`ImageMagick`](https://imagemagick.org/script/download.php)
-
-```bash
-git clone https://github.com/rayyreall/Whatsapp_Bot
-cd Whatsapp_Bot
-npm install
-npm i -g ts-node (It's up to this)
-```
-
-## Run
-
-```bash
-npm run mulai (If you use this, you have to install ts-node first)
-or
-npm start
-```
-
----
-
-### FOR TERMUX USER
-
-```bash
-apt update && apt upgrade
-apt install git -y
-apt install nodejs -y
-apt install ffmpeg -y
-apt install imagemagick -y
-git clone https://github.com/rayyreall/Whatsapp_Bot
-cd Whatsapp_Bot
-npm install
-npm i -g ts-node (It's up to this)
-```
-
-## Run
-
-```bash
-npm run mulai (If you use this, you have to install ts-node first)
-or
-npm start
-```
-
-Notes : I've never tried it on termux so sorry if there's an error
----
-
-
-# SETTINGS
-- Change Owner Number [here](https://github.com/rayyreall/Whatsapp_Bot/blob/master/.env)
-- URL MONGODB [here](https://github.com/rayyreall/Whatsapp_Bot/blob/master/.env)
-- If there is an error feature related to the web such as youtube, tiktok, instagram
-Set your own cookies in .env
-
+### BASE PINDAH INI MAU DI HAPUS
+## NEW BASE
+[click-here-new-base](https://github.com/rayyreall/Bot-Whatsapp)
 
 ### My Stat
 ![Ra Github stat](https://github-readme-stats.vercel.app/api?username=rayyreall&theme=midnight-purple&show_icons=true) 
