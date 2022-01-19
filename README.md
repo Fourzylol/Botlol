@@ -1,9 +1,6 @@
 ### Not finished yet there are still bugs can't be used
 
 ---
-### BASE PINDAH INI MAU DI HAPUS
-## NEW BASE
-[click-here-new-base](https://github.com/rayyreall/Bot-Whatsapp)
 
 ### My Stat
 ![Ra Github stat](https://github-readme-stats.vercel.app/api?username=rayyreall&theme=midnight-purple&show_icons=true) 
