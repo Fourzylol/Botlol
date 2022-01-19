@@ -1,4 +1,4 @@
-### *_New base moved click the link below_*
+### Not finished yet there are still bugs can't be used
 
 ---
 ### BASE PINDAH INI MAU DI HAPUS
