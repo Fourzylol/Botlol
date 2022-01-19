@@ -10,7 +10,7 @@
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rayyreall/WA-Bot.git"
+    "url": "git+https://github.com/rayyreall/Whatsapp_Bot.git"
   },
   "keywords": [
     "whatsappbot",
@@ -24,9 +24,9 @@
   "author": "rayyreall",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rayyreall/WA-Bot/issues"
+    "url": "https://github.com/rayyreall/Whatsapp_Bot/issues"
   },
-  "homepage": "https://github.com/rayyreall/WA-Bot#readme",
+  "homepage": "https://github.com/rayyreall/Whatsapp_Bot#readme",
   "dependencies": {
     "@adiwajshing/baileys-md": "github:adiwajshing/Baileys#multi-device",
     "@hapi/boom": "^9.1.4",
