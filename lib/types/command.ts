@@ -7,7 +7,7 @@ export declare interface IEventsHandler {
 	eventName?: string;
 	event?: string[];
 	tag?: string;
-	command?: string | string[] | RegExp;
+	command?: string | Array<string | RegExp> | RegExp;
 	isOwner?: boolean;
 	isGroupMsg?: boolean;
 	enable?: boolean;
@@ -15,6 +15,7 @@ export declare interface IEventsHandler {
 	callback?: (client: Clients, message: IMessages) =>  Promise <void | never> | void | never;
 	open?: boolean;
 	isPrefix?: boolean;
+	isMedia?: boolean;
 }
 
 export declare type ICommands  = {
@@ -22,13 +23,14 @@ export declare type ICommands  = {
 	eventName?: string;
 	event?: string[]
 	tag?: string;
-	command?: string | string[] | RegExp;
+	command?: string | Array<string | RegExp> | RegExp;
 	isOwner?: boolean;
 	isGroupMsg?: boolean;
 	enable?: boolean;
 	isQuerry?: boolean;
 	open?: boolean;
 	isPrefix?: boolean;
+	isMedia?: boolean;
 }
 
 export declare interface ICommand {
@@ -37,23 +39,26 @@ export declare interface ICommand {
 		eventName?: string;
 		event?: string[]
 		tag?: string;
-		command?: string | string[] | RegExp;
+		command?: string | Array<string | RegExp> | RegExp;
 		enable?: boolean;
 		isOwner?: boolean;
 		isGroupMsg?: boolean;
 		isQuerry?: boolean;
 		open?: boolean;
-		isPrefix?: boolean
+		isPrefix?: boolean;
+		isMedia?: boolean;
 	}
 }
 export declare interface ICmd {
 	event: string[];
 	tag: string;
-	command: string | string[] | RegExp;
+	command: string | Array<string | RegExp> | RegExp;
 	enable?: boolean;
 	isOwner?: boolean;
 	isGroupMsg?: boolean;
 	isQuerry?: boolean;
 	open?: boolean;
 	isPrefix?: boolean
+	eventName?: string;
+	isMedia?: boolean
 }
