@@ -2,11 +2,14 @@ import * as fs from "fs";
 import { ICommands,  IMessages, IEventsHandler, ICommand,  ICmd  } from "../../types";
 import { isObject } from "../../functions/functions";
 import Clients from "../clients/Cli";
-import path from "path"
+import path from "path";
+import chalk from "chalk";
+import moment from "moment-timezone"
 
 var Events: any = {};
 var EventsClass: any = {};
 var EventsCallback: any = {};
+moment.tz.setDefault('Asia/Jakarta').locale('id')
 
 export class HandlerExports {
 	public createCommand = async () => {
@@ -14,6 +17,7 @@ export class HandlerExports {
 			let response: ICommands = (await import(__dirname + "/../../exports/" + getFile)).default;
 			if (!response) continue
 			if (response?.enable === undefined) response["enable"] = true;
+			if (response.isPrefix === undefined) response.isPrefix = true
 			if (response.open === false && !response.command) continue;
 			if (!response.eventName) continue;
 			if (!Object.keys(Events || "")[0]) {
@@ -45,6 +49,7 @@ export class HandlerExports {
 			if (!respon) continue;
 			if (!respon.settings) continue;
 			if (respon.settings.enable === undefined) respon.settings.enable = true;
+			if (respon.settings.isPrefix === undefined) respon.settings.isPrefix = true;
 			if (respon.settings.open === false && !respon.settings.command) continue;
 			if (!respon.settings.eventName) continue;
 			if (!Object.keys(EventsClass || "")[0]) {
@@ -67,6 +72,8 @@ export class EventsCommand {
 	public Event: any = EventsCallback;
 	public async on (className: string, callback: (client: Clients, message: IMessages) => void, _event:  ICmd) {
 		_event.enable = _event.enable ? _event.enable : true;
+		_event.isPrefix = (_event.isPrefix !== undefined) ? _event.isPrefix : true;
+		_event.eventName = className
 		if (!this.Event[className])  {
 			this.Event[className] = {
 				callback,
@@ -108,19 +115,19 @@ async function createEvents (message: IMessages, Cli: Clients) {
 			for (const Index in globalThis.Events) {
 				const event: IEventsHandler = globalThis.Events[Index];
 				if (!event.enable && !event.isOwner) continue;
-				let cmd: string = "";
-				if (message.isPrefix && message.Prefix) cmd = message.command?.replace(event.isPrefix ? message.Prefix : "","") || "";
+				let cmd: string =  message.command?.replace(event.isPrefix ? message.Prefix as string : "", "") || "";
 				if (event.open && event.callback && typeof event.callback === "function") event.callback(Cli, message) 
-				if (event.command instanceof RegExp ? !!(event.command.exec(String(cmd)))?.[0] : Array.isArray(event.command) ? (event.command as Array<string|RegExp>).some((value) => {
-					return  value instanceof RegExp ? (value.exec(String(cmd)))?.[0] : (typeof value === "string") ? value === cmd : false
-				}) : typeof event.command == "string" ? (event.command === cmd) : false) {
+				if ((typeof event.command === "string" ? event.command === cmd : Array.isArray(event.command) ? (event.command as Array<string|RegExp>).some((values) => {
+					return (typeof values === "string") ? values === cmd : (values instanceof RegExp) ? !!(values.exec(String(cmd)))?.[0] : false
+				}) : (event.command instanceof RegExp) ? !!(event.command.exec(String(cmd))?.[0]) : false)) {
 					if (event.isOwner && !message.isOwner) return;
+					if (event.isMedia && !message.isMedia) return Cli.reply(message.from as string, "*「❗」* Mohon Maaf kak, harap kirim atau reply Gambar/Video dengan caption untuk melaksanakan perintah tersebut", message.id)
 					try {
 						if (event.callback && typeof event.callback === "function") await event.callback(Cli, message)
 					} catch (err) {
 						console.error(err)
 					} finally {
-						console.info("Running : " + event.eventName)
+						console.log(chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.keyword('blue')(`[\x1b[1;32m${chalk.hex('#009940').bold('RECORD')}]`), chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'),chalk.cyan('\x1bmSTATUS :\x1b'), chalk.hex('#fffb00')(message.fromMe ? 'SELF' : 'PUBLIK'), chalk.greenBright('[COMMAND]'), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.blueBright(message.command), chalk.hex('#f7ef07')(`[${message.args?.length}]`),chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'), chalk.hex('#26d126')('[PENGIRIM]'),chalk.hex('#f505c1')(message.pushName), chalk.hex('#ffffff')(`(${message.sender?.replace(/@s.whatsapp.net/i, '')})`), chalk.greenBright('IN'), chalk.hex('#0428c9')(`${(await (message.groupMetadata)?.())?.groupMetadata?.subject}`), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.hex('#f2ff03')('[DATE] =>'),chalk.greenBright(moment(new Date()).format('LLLL').split(' GMT')[0]))
 					}
 				}
 			}

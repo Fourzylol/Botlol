@@ -74,7 +74,7 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 		return mentions
 	}
 	chats.prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi;
-	chats.Prefix = chats.prefix instanceof RegExp ? (chats.command?.match(chats.prefix)?.[0]) : Array.isArray(chats.prefix) ? chats.command.match(new RegExp(`^(${(chats.prefix as Array<string>).join("|")})`, "i"))?.[0] : typeof chats.prefix === "string" ?  chats.command.match(new RegExp(`^${chats.prefix}`, "i"))?.[0] : "";
+	chats.Prefix = chats.prefix.test(chats.command) ? (chats.command.match(chats.prefix) as RegExpMatchArray)[0] : "Multi Prefix";
 	if (chats.Prefix) chats.isPrefix = chats.command?.startsWith(chats.Prefix)
 	else chats.isPrefix = false;
 	if (chats.media?.type as ParsedType === "sticker") chats.isQuotedStickerGif = (chats.media?.file as proto.IStickerMessage).isAnimated;
@@ -88,5 +88,4 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 	} else {
 		return chats
 	}
-	import("file-type/")
 }

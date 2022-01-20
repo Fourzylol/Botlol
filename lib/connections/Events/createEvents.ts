@@ -18,7 +18,7 @@ export class createHandler {
 		this.events.on("message-new", async (message: IMessages) => {
 			if (!message.isOwner) return
 			let handle: HandlerExports = new HandlerExports()
-			let Cli: Clients =  new Clients(this.clients, message)
+			let Cli: Clients =  new Clients(this.clients, message, this.events)
 			globalThis.ev = new EventsCommand()
 			await ev.sendCheck()
 			await handle.createCommand()

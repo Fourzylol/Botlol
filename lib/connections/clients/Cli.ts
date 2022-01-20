@@ -6,14 +6,16 @@ import { IMessages, IMedia, MetadataFile, TypesFile  } from '../../types';
 import FileType, { FileTypeResult } from "file-type"
 import { Transform } from "stream";
 import * as fs from "fs";
+import util from "util";
 
 type AutoPath = { file: string, mimetype: FileType.MimeType | undefined, ext: FileType.FileExtension | undefined }
 export default class Client {
-	constructor (public client: WASocket, public message: IMessages) {}
+	constructor (public client: WASocket, public message: IMessages, public events: import("events").EventEmitter) {}
 	public sendText = async (from: string, text: string) => {
 		return (await this.client.sendMessage(from, { text }))
 	}
 	public sock: WASocket = this.client;
+	public ev: import("events").EventEmitter = this.events;
 	public reply = async (from: string, text: string, id?: proto.IWebMessageInfo) => {
 		return (await this.client.sendMessage(from, { text }, { quoted: id }))
 	}
@@ -42,6 +44,12 @@ export default class Client {
 	}
 	public Print = async (msg: Object | any) => {
 		return await this.reply(this.message.from as string, JSON.stringify(msg, null, 4), this.message.id)
+	}
+	public Panic = async (error: any) =>{
+		return await this.reply(this.message.from as string, util.format(error), this.message.id)
+	}
+	public wait = async () => {
+		await this.reply(this.message.from as string, `*⌛* Mohon tunggu sebentar bot sedang melaksanakan perintah`, this.message.id)
 	}
 	public sendFile = async (from: string, media: string | Buffer, settings: MetadataFile = {}) => {
 		try {
