@@ -1,4 +1,4 @@
 import {  createConnections } from "./client";
 
 
-new  createConnections({})
+new  createConnections({ enableHistory: true})

@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import { ICommands,  IMessages, IEventsHandler, ICommand,  ICmd  } from "../../types";
-import { isObject } from "../../functions/functions";
+import { ICommands,  Messages, IEventsHandler, ICommand,  ICmd  } from "../../types";
+import { isObject, getUrl } from "../../functions/functions";
 import Clients from "../clients/Cli";
 import path from "path";
 import chalk from "chalk";
@@ -9,7 +9,9 @@ import moment from "moment-timezone"
 var Events: any = {};
 var EventsClass: any = {};
 var EventsCallback: any = {};
-moment.tz.setDefault('Asia/Jakarta').locale('id')
+const spam_detected: Set<string> = new Set<string>();
+const spam_notspam: Set<string> = new Set<string>();
+moment.tz.setDefault('Asia/Jakarta').locale('id');
 
 export class HandlerExports {
 	public createCommand = async () => {
@@ -70,7 +72,7 @@ export class HandlerExports {
 
 export class EventsCommand {
 	public Event: any = EventsCallback;
-	public async on (className: string, callback: (client: Clients, message: IMessages) => void, _event:  ICmd) {
+	public async on (className: string, callback: (client: Clients, message: Messages.IMessages) => void, _event:  ICmd) {
 		_event.enable = _event.enable ? _event.enable : true;
 		_event.isPrefix = (_event.isPrefix !== undefined) ? _event.isPrefix : true;
 		_event.eventName = className
@@ -109,25 +111,39 @@ export class EventsCommand {
 }
 
 
-async function createEvents (message: IMessages, Cli: Clients) {
+async function createEvents (message: Messages.IMessages, Cli: Clients) {
 	if (globalThis.Events !== {}) {
 		try {
 			for (const Index in globalThis.Events) {
 				const event: IEventsHandler = globalThis.Events[Index];
 				if (!event.enable && !event.isOwner) continue;
 				let cmd: string =  message.command?.replace(event.isPrefix ? message.Prefix as string : "", "") || "";
-				if (event.open && event.callback && typeof event.callback === "function") event.callback(Cli, message) 
+				if (event.open && event.callback && typeof event.callback === "function") event.callback(Cli, message);
 				if ((typeof event.command === "string" ? event.command === cmd : Array.isArray(event.command) ? (event.command as Array<string|RegExp>).some((values) => {
 					return (typeof values === "string") ? values === cmd : (values instanceof RegExp) ? !!(values.exec(String(cmd)))?.[0] : false
 				}) : (event.command instanceof RegExp) ? !!(event.command.exec(String(cmd))?.[0]) : false)) {
+					if (event.open) return;
+					if (!!spam_notspam.has(String(message.sender))) return;
+					if ((event.antiSpam === undefined || event.antiSpam) && !message.isOwner && !!spam_detected.has(String(message.sender))) return spam_notspam.add(String(message.sender)) && Cli.reply(message.from as string, "*「❗」* Mohon Maaf kak gunakanlah waktu jeda untuk menggunakan command kembali", message.id)
 					if (event.isOwner && !message.isOwner) return;
-					if (event.isMedia && !message.isMedia) return Cli.reply(message.from as string, "*「❗」* Mohon Maaf kak, harap kirim atau reply Gambar/Video dengan caption untuk melaksanakan perintah tersebut", message.id)
+					if (event.isGroupMsg && !message.isGroupMsg && !message.isOwner) return Cli.reply(message.from as string, "*「❗」* Maaf kak perintah ini hanya bisa di gunakan di dalam grup saja kak", message.id);
+					if (event.isAdmins && !message.isOwner && !(await (message.groupMetadata)?.())?.isGroupAdmins) return Cli.reply(message.from as string, "*「❗」*  Mohon Maaf kak, Perintah ini dapat digunakan khusus untuk admin group saja", message.id);
+					if (event.isBotAdmins && !message.isOwner && !(await (message.groupMetadata)?.())?.isGroupAdmins) return Cli.reply(message.from as string, "*「❗」* Mohon Maaf Kak, Perintah ini dapat di gunakan jika bot menjadi admin group", message.id);
+					if (event.isQuerry && !(message.args as Array<string>)?.[0]) return Cli.reply(message?.from as string, "*「❗」* Mohon Maaf kak, Harap Masukkan Querry untuk menggunakan perintah tersebut", message.id);
+					if (event.isMedia && !message.isMedia) return Cli.reply(message.from as string, "*「❗」* Mohon Maaf kak, harap kirim atau reply Gambar/Video dengan caption untuk melaksanakan perintah tersebut", message.id);
+					if (event.isUrl && !getUrl(message.args?.join(" "))) return Cli.reply(message.from as string, "*「❗」* Mohon Maaf kak Harap Masukkan Url Untuk Menggunakan Perintah Tersebut", message.id);
+					if (event.isMentioned && !(message.mentioned)?.[0]) return Cli.reply(message.from as string, "*「❗」* Mohon Maaf kak harap tag seseorang untuk melakukan perintah tersebut", message.id);
 					try {
+						spam_detected.add(String(message.sender));
 						if (event.callback && typeof event.callback === "function") await event.callback(Cli, message)
 					} catch (err) {
 						console.error(err)
 					} finally {
-						console.log(chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.keyword('blue')(`[\x1b[1;32m${chalk.hex('#009940').bold('RECORD')}]`), chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'),chalk.cyan('\x1bmSTATUS :\x1b'), chalk.hex('#fffb00')(message.fromMe ? 'SELF' : 'PUBLIK'), chalk.greenBright('[COMMAND]'), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.blueBright(message.command), chalk.hex('#f7ef07')(`[${message.args?.length}]`),chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'), chalk.hex('#26d126')('[PENGIRIM]'),chalk.hex('#f505c1')(message.pushName), chalk.hex('#ffffff')(`(${message.sender?.replace(/@s.whatsapp.net/i, '')})`), chalk.greenBright('IN'), chalk.hex('#0428c9')(`${(await (message.groupMetadata)?.())?.groupMetadata?.subject}`), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.hex('#f2ff03')('[DATE] =>'),chalk.greenBright(moment(new Date()).format('LLLL').split(' GMT')[0]))
+						console.info(chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.keyword('blue')(`[\x1b[1;32m${chalk.hex('#009940').bold('RECORD')}]`), chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'),chalk.cyan('\x1bmSTATUS :\x1b'), chalk.hex('#fffb00')(message.fromMe ? 'SELF' : 'PUBLIK'), chalk.greenBright('[COMMAND]'), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.blueBright(message.command), chalk.hex('#f7ef07')(`[${message.args?.length}]`),chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'), chalk.hex('#26d126')('[PENGIRIM]'),chalk.hex('#f505c1')(message.pushName), chalk.hex('#ffffff')(`(${message.sender?.replace(/@s.whatsapp.net/i, '')})`), chalk.greenBright('IN'), chalk.hex('#0428c9')(`${(await (message.groupMetadata)?.())?.groupMetadata?.subject}`), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.hex('#f2ff03')('[DATE] =>'),chalk.greenBright(moment(new Date()).format('LLLL').split(' GMT')[0]))
+						setTimeout(() => {
+							if (!!spam_detected.has(String(message.sender))) spam_detected.delete(String(message.sender));
+							if (!!spam_notspam.has(String(message.sender))) spam_notspam.delete(String(message.sender))
+						}, 5000)
 					}
 				}
 			}

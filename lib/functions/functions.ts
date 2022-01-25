@@ -1,5 +1,6 @@
 import { MimeType } from "file-type";
-import { TypesFile } from "../types"
+import parsems from "parse-ms";
+import type { Messages } from "../types";
 
 export function isObject (obj: any): boolean {
 	return (obj && typeof obj === "object" && !Array.isArray(obj) && obj !== null)
@@ -37,7 +38,11 @@ export function RandomName (jumlah?: number): string {
     return result.join('') as string
 }
 
-export function ParseExtensionFromMime (mimeType: MimeType): { type: TypesFile, ext: string} | undefined {
+export function AutoPath (ext: string): string {
+	return "./lib/database/media/temp/" + RandomName(23) + "." + ext;
+}
+
+export function ParseExtensionFromMime (mimeType: MimeType): { type: Messages.TypesFile, ext: string} | undefined {
 	if (mimeType.startsWith("application") || mimeType.startsWith("font")) {
 		return { type: "document", ext: mimeType.split("/")[1] }
 	} else if (mimeType.startsWith("image")) {
@@ -48,4 +53,14 @@ export function ParseExtensionFromMime (mimeType: MimeType): { type: TypesFile, 
 	} else if (mimeType.startsWith("audio")) {
 		return { type: "audio", ext: mimeType.split("/")[1] }
 	}
+}
+
+export function getUrl (Link: string | undefined): RegExpMatchArray | null {
+	return Link?.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/, 'gi')) || null
+}
+
+export function Runtime(seconds: number): string {
+	let getData = parsems(seconds * 1000)
+	let Text: string = `${getData.days} Hari, ${getData.hours} Jam, ${getData.minutes} Menit, ${getData.seconds} Detik`
+	return Text
 }

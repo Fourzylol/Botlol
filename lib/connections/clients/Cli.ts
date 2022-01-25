@@ -1,25 +1,32 @@
-import { WASocket, proto, downloadContentFromMessage, DownloadableMessage, MediaType } from "@adiwajshing/baileys-md";
+import { WASocket, proto, downloadContentFromMessage, DownloadableMessage, MediaType, generateWAMessage, AnyMessageContent,  MessageGenerationOptions, generateMessageID } from "@adiwajshing/baileys-md";
 import axios, { AxiosResponse } from "axios";
 import { ExtractAndCheckUrl, RandomName, ParseExtensionFromMime } from "../../functions/functions";
 import Jimp from "jimp"
-import { IMessages, IMedia, MetadataFile, TypesFile  } from '../../types';
+import { Messages  } from '../../types';
 import FileType, { FileTypeResult } from "file-type"
 import { Transform } from "stream";
 import * as fs from "fs";
 import util from "util";
+import Api from "./api";
 
 type AutoPath = { file: string, mimetype: FileType.MimeType | undefined, ext: FileType.FileExtension | undefined }
 export default class Client {
-	constructor (public client: WASocket, public message: IMessages, public events: import("events").EventEmitter) {}
+	constructor (public client: WASocket, public message: Messages.IMessages, public events: import("events").EventEmitter) {}
 	public sendText = async (from: string, text: string) => {
 		return (await this.client.sendMessage(from, { text }))
 	}
+	public readonly API: Api = new Api();
 	public sock: WASocket = this.client;
 	public ev: import("events").EventEmitter = this.events;
 	public reply = async (from: string, text: string, id?: proto.IWebMessageInfo) => {
+
 		return (await this.client.sendMessage(from, { text }, { quoted: id }))
 	}
-	public decryptMedia = async (media: IMedia, save?: boolean, path?: string): Promise <string | Buffer> => {
+	public readonly prepareMessageFromContent = async (from: string, content: AnyMessageContent, options:  MessageGenerationOptions) => {
+		return new Promise <proto.WebMessageInfo> (async (resolve) => resolve(await generateWAMessage(from, content, options)))
+	}
+	
+	public readonly decryptMedia = async (media: Messages.IMedia, save?: boolean, path?: string): Promise <string | Buffer> => {
 		try {
 			const Stream: Transform = await downloadContentFromMessage(media.file as DownloadableMessage , media.type as MediaType)
 			let buffer: Buffer = Buffer.from([])
@@ -49,16 +56,24 @@ export default class Client {
 		return await this.reply(this.message.from as string, util.format(error), this.message.id)
 	}
 	public wait = async () => {
-		await this.reply(this.message.from as string, `*⌛* Mohon tunggu sebentar bot sedang melaksanakan perintah`, this.message.id)
+		return await this.reply(this.message.from as string, `*⌛* Mohon tunggu sebentar bot sedang melaksanakan perintah`, this.message.id)
 	}
-	public sendFile = async (from: string, media: string | Buffer, settings: MetadataFile = {}) => {
+	public getChatAll =  () => {
+		let File: string[] = fs.readdirSync("./lib/database/history/");
+		let respon: Array<string> = []
+		for (let index of File) {
+			respon.push(index.split(".json")[0].split("@s.whatsapp.net-")[1])
+		}
+		return respon;
+	}
+	public sendFile = async (from: string, media: string | Buffer, settings: Messages.MetadataFile = {}) => {
 		try {
 			let File: AutoPath | undefined;
 			let config;
 			if (Buffer.isBuffer(media)) {
 				File = await this.AutoSave(media)
 				config = {
-					[settings.docs ? "document" : ParseExtensionFromMime(File.mimetype as FileType.MimeType)?.type as TypesFile]: {
+					[settings.docs ? "document" : ParseExtensionFromMime(File.mimetype as FileType.MimeType)?.type as Messages.TypesFile]: {
 						stream: fs.createReadStream(File.file)
 					},
 					mimetype: File.mimetype
@@ -66,13 +81,13 @@ export default class Client {
 			} else if ((typeof media === "string" && ExtractAndCheckUrl(media).isDetect) || (typeof media === "string" && fs.existsSync(media))) {
 				File = await this.AutoSave((await this.getBuffer(media))?.file as Buffer)
 				if ((typeof media === "string" && fs.existsSync(media))) config = {
-					[settings.docs ? "document" :ParseExtensionFromMime(File.mimetype as FileType.MimeType)?.type as TypesFile]: {
+					[settings.docs ? "document" :ParseExtensionFromMime(File.mimetype as FileType.MimeType)?.type as Messages.TypesFile]: {
 						stream: fs.createReadStream(File.file)
 					},
 					mimetype: File.mimetype
 				}
 				else if ((typeof media === "string" && ExtractAndCheckUrl(media).isDetect)) config = {
-					[settings.docs ? "document" : ParseExtensionFromMime(File.mimetype as FileType.MimeType)?.type as TypesFile]: {
+					[settings.docs ? "document" : ParseExtensionFromMime(File.mimetype as FileType.MimeType)?.type as Messages.TypesFile]: {
 						url:  ExtractAndCheckUrl(media).first_url
 					},
 					mimetype: File.mimetype

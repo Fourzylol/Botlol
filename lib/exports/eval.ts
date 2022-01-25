@@ -18,6 +18,7 @@ command.tag = "owner";
 command.isOwner = true;
 command.eventName = "Eval";
 command.command = /^(?:=>|>)$/i;
-command.isPrefix = false
+command.isPrefix = false;
+command.event = ["=>"];
 
-export default command
+export default command;

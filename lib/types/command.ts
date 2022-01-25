@@ -1,5 +1,4 @@
-import { WASocket } from "@adiwajshing/baileys-md";
-import { IMessages } from "./Messages";
+import { Messages } from "./Messages";
 import Clients from "../connections/clients/Cli";
 
 
@@ -12,14 +11,20 @@ export declare interface IEventsHandler {
 	isGroupMsg?: boolean;
 	enable?: boolean;
 	isQuerry?: boolean;
-	callback?: (client: Clients, message: IMessages) =>  Promise <void | never> | void | never;
+	callback?: (client: Clients, message: Messages.IMessages) =>  Promise <void | never> | void | never;
 	open?: boolean;
 	isPrefix?: boolean;
 	isMedia?: boolean;
+	isMentioned?: boolean;
+	isUrl?: boolean;
+	isAdmins?: boolean;
+	isBotAdmins?: boolean;
+	antiSpam?: boolean;
+	skipMenu?: boolean;
 }
 
 export declare type ICommands  = {
-	(client: Clients, message: IMessages):  Promise <void | never> | void | never;
+	(client: Clients, message: Messages.IMessages):  Promise <void | never> | void | never;
 	eventName?: string;
 	event?: string[]
 	tag?: string;
@@ -31,10 +36,16 @@ export declare type ICommands  = {
 	open?: boolean;
 	isPrefix?: boolean;
 	isMedia?: boolean;
+	isMentioned?: boolean;
+	isUrl?: boolean;
+	isAdmins?: boolean;
+	isBotAdmins?: boolean;
+	antiSpam?: boolean;
+	skipMenu?: boolean;
 }
 
 export declare interface ICommand {
-	callback: (client: Clients, message: IMessages) => Promise <void | never> | void | never;
+	callback: (client: Clients, message: Messages.IMessages) => Promise <void | never> | void | never;
 	settings: {
 		eventName?: string;
 		event?: string[]
@@ -47,6 +58,12 @@ export declare interface ICommand {
 		open?: boolean;
 		isPrefix?: boolean;
 		isMedia?: boolean;
+		isMentioned?: boolean;
+		isUrl?: boolean;
+		isAdmins?: boolean;
+		isBotAdmins?: boolean;
+		antiSpam?: boolean;
+		skipMenu?: boolean;
 	}
 }
 export declare interface ICmd {
@@ -60,5 +77,11 @@ export declare interface ICmd {
 	open?: boolean;
 	isPrefix?: boolean
 	eventName?: string;
-	isMedia?: boolean
+	isMedia?: boolean;
+	isMentioned?: boolean;
+	isUrl?: boolean;
+	isAdmins?: boolean;
+	isBotAdmins?: boolean;
+	antiSpam?: boolean;
+	skipMenu?: boolean;
 }
