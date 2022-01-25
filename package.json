@@ -1,6 +1,6 @@
 {
   "name": "ra-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -10,7 +10,7 @@
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rayyreall/WA-Bot.git"
+    "url": "git+https://github.com/rayyreall/Whatsapp_Bot.git"
   },
   "keywords": [
     "whatsappbot",
@@ -24,9 +24,9 @@
   "author": "rayyreall",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rayyreall/WA-Bot/issues"
+    "url": "https://github.com/rayyreall/Whatsapp_Bot/issues"
   },
-  "homepage": "https://github.com/rayyreall/WA-Bot#readme",
+  "homepage": "https://github.com/rayyreall/Whatsapp_Bot#readme",
   "dependencies": {
     "@adiwajshing/baileys": "github:adiwajshing/Baileys#multi-device",
     "@adiwajshing/baileys-md": "github:adiwajshing/Baileys#multi-device",
