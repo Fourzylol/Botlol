@@ -30,17 +30,19 @@ export default class StickerAPI {
 			let Type: "file" | "image" | null
 			if (this.File.type === "image") Type = "image";
 			else if (this.File.type === "video") {
-				Type = "file"
-				this.config = {
-					...this.config,
-					processOptions: {
+				Type = "file";
+				Object.defineProperty(this.config, "processOptions", {
+					value: {
 						crop: (this.StickerMetadata.keepScale !== undefined) ? this.StickerMetadata.keepScale : false,
 						fps: 10,
 						startTime: "00:00:00.0",
 						endTime: "00:00:7.0",
 						loop: 0
 					},
-				}
+					writable: true,
+					enumerable: true,
+					configurable: true
+				})
 			} else Type = null;
 			if (typeof this.File.media === "string" && fs.existsSync(this.File.media)) this.File.media = fs.readFileSync(this.File.media);
 			if (!Type) return reject(new Error("Cannot Extract Type"));
@@ -53,7 +55,7 @@ export default class StickerAPI {
 					"Content-Type": "application/json;charset=utf-8",
 					"User-Agent": "WhatsApp/2.2037.6 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
 				},
-				data: JSON.stringify(Object.assign(this.config, { stickerMetadata: this.StickerMetadata }, {[Type]: `data:${(await this.File.mime)};base64,${this.File.media.toString("base64")}`})),
+				data: JSON.stringify(Object.assign(this.config, { stickerMetadata: this.StickerMetadata }, { [Type]: `data:${(await this.File.mime)};base64,${this.File.media.toString("base64")}`})),
 				maxBodyLength: 20000000, 
 				maxContentLength: 1500000
 			}).then(({ data}) => {
@@ -62,7 +64,7 @@ export default class StickerAPI {
 			}).catch((err) => reject(err))
 		})
 	}
-	private config: any = {
+	private config = {
 		sessionInfo: {
 			WA_VERSION: "2.2106.5",
 			PAGE_UA: "WhatsApp/2.2037.6 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
