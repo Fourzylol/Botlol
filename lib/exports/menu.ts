@@ -1,6 +1,8 @@
-import { ICommands, IEventsHandler  } from "../types";
+import { ICommands, IEventsCmd  } from "../types";
 import moment from "moment-timezone";
 import Speed from 'performance-now';
+import { proto, generateWAMessage, generateMessageID } from '@adiwajshing/baileys-md';
+import * as fs from "fs";
 
 
 moment.tz.setDefault('Asia/Jakarta').locale('id')
@@ -9,10 +11,12 @@ let command: ICommands = async (client, message) => {
 	const { isOwner } = message;
 	let data: any = {};
 	for (let index of Object.entries(globalThis.Events)) {
-		if ((data[(index[1] as IEventsHandler).tag as string]) as IEventsHandler) data[(index[1] as IEventsHandler).tag as string] =
-		[...data[(index[1] as IEventsHandler).tag as string], Object.assign({}, index[1])]
+		if (!(index[1] as IEventsCmd).tag) continue;
+		if (!(index[1] as IEventsCmd).event) continue;
+		if ((data[(index[1] as IEventsCmd).tag as string]) as IEventsCmd) data[(index[1] as IEventsCmd ).tag as string] =
+		[...data[(index[1] as IEventsCmd ).tag as string], Object.assign({}, index[1])]
 		else {
-			Object.defineProperty(data, String((index[1] as IEventsHandler).tag), {
+			Object.defineProperty(data, String((index[1] as IEventsCmd).tag), {
 				value: [index[1]],
 				writable: true,
 				enumerable: true,
@@ -39,8 +43,8 @@ ${(process.env.server !== undefined) ? "*🗄 Server :* " + process.env.server :
 *👾 SC :* https://github.com/rayyreall/Bot-Whatsapp\n\n`
 
 for (let index of Object.entries(data)) {
-	if ((index[1] as IEventsHandler[]).filter((values) => values.skipMenu !== true).length !== 0) 	text += `\n\n            *MENU ${index[0].toUpperCase()}*\n\n`;
-	for (let values of (index[1]) as IEventsHandler[]) {
+	if ((index[1] as IEventsCmd[]).filter((values) => values.skipMenu !== true).length !== 0) 	text += `\n\n            *MENU ${index[0].toUpperCase()}*\n\n`;
+	for (let values of (index[1]) as IEventsCmd []) {
 		if (values.skipMenu === true) continue;
 		if (typeof values.event === "string") text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix : "") + values.event +"*\n";
 		else if (Array.isArray(values.event))  {
@@ -62,13 +66,32 @@ __________________________________
 *🔖 || IG*
 @rayyreall`
 
-
-return void await client.client.sendMessage(message.from as string, { text,
-footer: '🔖 @Powered by Ra', templateButtons:[
-	{index: 1, urlButton: {displayText: '𝗦𝗖𝗥𝗜𝗣𝗧 𝗕𝗢𝗧', url: 'https://github.com/rayyreall/Whatsapp_Bot'}},
-    {index: 2, callButton: {displayText: '𝗢𝗪𝗡𝗘𝗥 / 𝗖𝗥𝗘𝗔𝗧𝗢𝗥', phoneNumber: '+33 7 53 04 55 34'}},
-    {index: 3, quickReplyButton: {displayText: 'Semoga Saya Mandul', id: 'instagram'}}
-]}, { quoted: message.id})
+return void await client.client.relayMessage(message.from as string, proto.Message.fromObject({
+	buttonsMessage: proto.ButtonsMessage.fromObject({
+		contentText: text,
+		footerText: "🔖 @Powered by Ra",
+		buttons: [{
+			buttonId: "owner",
+			buttonText: {
+				displayText: "𝗢𝗪𝗡𝗘𝗥 / 𝗖𝗥𝗘𝗔𝗧𝗢𝗥",
+			},
+			type: 1, 
+		}, {
+			buttonId: "sc",
+			buttonText: {
+				displayText: "𝗦𝗖𝗥𝗜𝗣𝗧 𝗕𝗢𝗧",
+			},
+			type: 1
+		}],
+		contextInfo: proto.ContextInfo.fromObject({
+			mentionedJid: ["33753045534@s.whatsapp.net"]
+		}),
+		headerType: 4,
+		imageMessage: proto.ImageMessage.fromObject((await generateWAMessage(message.from as string, { image: {
+			stream: fs.createReadStream("./lib/database/media/image/thumb.png")
+		}, jpegThumbnail: await client.compressImage("./lib/database/media/image/thumb.png") as any }, { userJid: client.client.authState.creds.me!.id, upload: client.client.waUploadToServer, messageId: generateMessageID()})
+	).message?.imageMessage as proto.ImageMessage) })
+}), { messageId: generateMessageID() })
 }
 
 command.event = ["menu"];

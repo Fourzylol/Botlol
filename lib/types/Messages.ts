@@ -5,6 +5,45 @@ export namespace Messages {
 	export declare type ParsedType = "image" | "video" | "audio" | "document" | "sticker";
 	export declare type TypesFile = "document" |	"image"| "video"| "audio" | "sticker";
 	export declare type KeyChats = keyof IMessages;
+	export declare interface Messages {
+		from: string | undefined | null;
+		fromMe: boolean | undefined | null;
+		pushName: string | null | undefined;
+		message: proto.IFutureProofMessage;
+		id: proto.IWebMessageInfo;
+		isGroupMsg: boolean;
+		type: keyof proto.IMessage;
+		typeQuoted: keyof proto.IMessage;
+		quotedMsg: proto.IContextInfo | null | undefined;
+		botNumber: string;
+		body: string | null | undefined;
+		buttonsID: string | null | undefined;
+		mentioned: Array<string>;
+		media: IMedia;
+		sender: string | null;
+		command: string;
+		args: string[];
+		ownerNumber: `${number}@s.whatsapp.net`[];
+		quotedBody: string | null ;
+		isOwner: boolean;
+		isMedia: boolean;
+		isGambar: boolean;
+		isVideo: boolean;
+		isAudio: boolean;
+		isSticker: boolean;
+		isQuotedSticker: boolean;
+		isQuotedImage: boolean;
+		isQuotedVideo: boolean;
+		isQuotedAudio: boolean;
+		isQuotedDokumen: boolean;
+		isQuotedStickerGif: boolean | null | undefined;
+		prefix: string | RegExp | Array<string>;
+		Prefix: string;
+		isPrefix: boolean;
+		mimetype: string;
+		parseMentions: (text: string) => Promise<Array<string>>;
+		groupMetadata: () => Promise < HandlerGroupMetadata>;
+	}
 	export declare interface IMessages {
 		from?: string | undefined | null;
 		fromMe?: boolean | undefined | null;
@@ -24,6 +63,7 @@ export namespace Messages {
 		command?: string;
 		args?: string[];
 		ownerNumber?: `${number}@s.whatsapp.net`[];
+		quotedBody?: string | null ;
 		isOwner?: boolean;
 		isMedia?: boolean;
 		isGambar?: boolean;
