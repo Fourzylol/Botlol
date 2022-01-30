@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { ICommands,  Messages, IEventsHandler, ICommand,  ICmd  } from "../../types";
+import type { ICommands,  Messages, ICommand, IEventsCmd  } from "../../types";
 import { isObject, getUrl } from "../../functions/functions";
 import Clients from "../clients/Cli";
 import path from "path";
@@ -72,7 +72,7 @@ export class HandlerExports {
 
 export class EventsCommand {
 	public Event: any = EventsCallback;
-	public async on (className: string, callback: (client: Clients, message: Messages.IMessages) => void, _event:  ICmd) {
+	public async on (className: string, callback: (client: Clients, message: Messages.IMessages) => void, _event:  IEventsCmd) {
 		_event.enable = _event.enable ? _event.enable : true;
 		_event.isPrefix = (_event.isPrefix !== undefined) ? _event.isPrefix : true;
 		_event.eventName = className
@@ -115,14 +115,15 @@ async function createEvents (message: Messages.IMessages, Cli: Clients) {
 	if (globalThis.Events !== {}) {
 		try {
 			for (const Index in globalThis.Events) {
-				const event: IEventsHandler = globalThis.Events[Index];
+				const event: ICommands = globalThis.Events[Index];
 				if (!event.enable && !event.isOwner) continue;
 				let cmd: string =  message.command?.replace(event.isPrefix ? message.Prefix as string : "", "") || "";
-				if (event.open && event.callback && typeof event.callback === "function") event.callback(Cli, message);
+				if (event.openCmd === undefined) event.openCmd = true;
+				if (event.open && !event.openCmd && event.callback && typeof event.callback === "function") event.callback(Cli, message as Messages.Messages);
 				if ((typeof event.command === "string" ? event.command === cmd : Array.isArray(event.command) ? (event.command as Array<string|RegExp>).some((values) => {
 					return (typeof values === "string") ? values === cmd : (values instanceof RegExp) ? !!(values.exec(String(cmd)))?.[0] : false
 				}) : (event.command instanceof RegExp) ? !!(event.command.exec(String(cmd))?.[0]) : false)) {
-					if (event.open) return;
+					if (event.open &&  event.openCmd && event.callback && typeof event.callback === "function") return event.callback(Cli, message as Messages.Messages);
 					if (!!spam_notspam.has(String(message.sender))) return;
 					if ((event.antiSpam === undefined || event.antiSpam) && !message.isOwner && !!spam_detected.has(String(message.sender))) return spam_notspam.add(String(message.sender)) && Cli.reply(message.from as string, "*「❗」* Mohon Maaf kak gunakanlah waktu jeda untuk menggunakan command kembali", message.id)
 					if (event.isOwner && !message.isOwner) return;
@@ -135,7 +136,7 @@ async function createEvents (message: Messages.IMessages, Cli: Clients) {
 					if (event.isMentioned && !(message.mentioned)?.[0]) return Cli.reply(message.from as string, "*「❗」* Mohon Maaf kak harap tag seseorang untuk melakukan perintah tersebut", message.id);
 					try {
 						spam_detected.add(String(message.sender));
-						if (event.callback && typeof event.callback === "function") await event.callback(Cli, message)
+						if (event.callback && typeof event.callback === "function") await event.callback(Cli, message as Messages.Messages)
 					} catch (err) {
 						console.error(err)
 					} finally {

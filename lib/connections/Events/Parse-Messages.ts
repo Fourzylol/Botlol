@@ -27,6 +27,13 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 	chats.buttonsID = chats.message.message?.buttonsResponseMessage?.selectedButtonId || chats.message.message?.templateButtonReplyMessage?.selectedId;
 	chats.mentioned = chats.message.message?.extendedTextMessage?.contextInfo?.mentionedJid && chats.message.message.extendedTextMessage.contextInfo.mentionedJid.length > 0 ? chats.message.message.extendedTextMessage.contextInfo.mentionedJid : chats.message?.message?.extendedTextMessage?.contextInfo?.quotedMessage && chats.message.message.extendedTextMessage.contextInfo.participant ? [chats.message.message.extendedTextMessage.contextInfo.participant] : [];
 	if (chats.type === "viewOnceMessage" && ["imageMessage", "videoMessage"].includes(Object.keys(chats.message.message?.viewOnceMessage?.message || {})[0])) chats.body = (chats.message.message?.viewOnceMessage?.message as proto.IMessage)?.[Object.keys(chats.message.message?.viewOnceMessage?.message || {})[0] as "imageMessage" | "videoMessage"]?.caption;
+	if (chats.quotedMsg && ["conversation", "extendedTextMessage"].includes(chats.typeQuoted as string)) chats.quotedBody = chats.quotedMsg.quotedMessage?.conversation || chats.quotedMsg.quotedMessage?.extendedTextMessage?.text;
+	if (chats.quotedMsg && ["imageMessage", "videoMessage"].includes(chats.typeQuoted as string)) chats.quotedBody =  (chats.quotedMsg.quotedMessage)?.[(chats.typeQuoted as "videoMessage" | "imageMessage")]?.caption;
+	if (chats.quotedMsg && chats.typeQuoted === "buttonsMessage") chats.quotedBody = chats.quotedMsg.quotedMessage?.buttonsMessage?.text;
+	if (chats.quotedMsg && (["buttonsResponseMessage", "templateButtonReplyMessage"].includes(chats.typeQuoted as string)))  chats.quotedBody =  (chats.quotedMsg.quotedMessage)?.[chats.typeQuoted as "buttonsResponseMessage" | "templateButtonReplyMessage"]?.selectedDisplayText;
+	if (chats.quotedMsg &&  chats.typeQuoted === "listMessage") chats.quotedBody = chats.quotedMsg.quotedMessage?.listResponseMessage?.title;
+	if (chats.quotedMsg && chats.typeQuoted === "locationMessage") chats.quotedBody =  chats.quotedMsg.quotedMessage?.liveLocationMessage?.caption;
+	if (chats.quotedMsg && chats.typeQuoted === "viewOnceMessage" && ["imageMessage", "videoMessage"].includes(Object.keys(chats.quotedMsg.quotedMessage?.viewOnceMessage?.message || {})[0])) chats.quotedBody = (chats.quotedMsg.quotedMessage?.viewOnceMessage?.message as proto.IMessage)?.[Object.keys(chats.quotedMsg.quotedMessage?.viewOnceMessage?.message || {})[0] as "imageMessage" | "videoMessage"]?.caption;
 	if (mediaType.find((values) => chats.typeQuoted === values)) chats.media = {
 		type: (mediaType.find((values) => chats.typeQuoted === values) as Messages.TypesMedia).replace("Message", "") as Messages.TypesMedia,
 		file: (chats.quotedMsg?.quotedMessage as proto.IMessage)?.[chats.typeQuoted as Messages.TypesMedia] as proto.IImageMessage | proto.IVideoMessage | proto.IAudioMessage | proto.IDocumentMessage | proto.IStickerMessage,
@@ -38,6 +45,8 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 		mimetype:  ((chats.message.message as proto.IMessage)?.[chats.type as Messages.TypesMedia] as proto.IImageMessage | proto.IVideoMessage | proto.IAudioMessage | proto.IDocumentMessage | proto.IStickerMessage).mimetype?.split("/")[1]
 	}
 	chats.sender = mess.key.fromMe ? client?.user?.id : chats.isGroupMsg ? mess.key.participant : mess.key.remoteJid;
+	if (chats.sender) chats.sender = `${(chats.sender.match(/([\d+\-])/gi) as RegExpMatchArray).join("")}@s.whatsapp.net`;
+	if (chats.from) chats.from = `${chats.isGroupMsg ? chats.from : chats.sender}`;
 	let [command, ...args]: string[] = chats.body ? chats.body.split(" ") : [];
 	chats.command = command?.toLowerCase();
 	chats.args = args || [];

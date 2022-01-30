@@ -7,7 +7,8 @@ config({ path: "./.env"})
 
 export default class Youtube {
 	constructor () {};
-	public regexYoutubeId: RegExp = /https?:\/\/(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/ytscreeningroom\?v=|\/feeds\/api\/videos\/|\/user\S*[^\w\-\s]|\S*[^\w\-\s]))([\w\-]{11})[?=&+%\w-]*/gi;
+	public readonly regexYoutubeId: RegExp = /https?:\/\/(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/ytscreeningroom\?v=|\/feeds\/api\/videos\/|\/user\S*[^\w\-\s]|\S*[^\w\-\s]))([\w\-]{11})[?=&+%\w-]*/gi;
+	public readonly regexYoutube: RegExp = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/;
 	public readonly y2Mate = async (url: string, format?: { ext?: "mp4" | "mp3", quality?: "1080" | "720" | "480" | "360" | "240p" | "144p" | "128" }) => {
 		return new Promise <import("../../../types").Y2Mate> (async (resolve, reject) => {
 			if (format?.ext === "mp3") format.quality = "128";

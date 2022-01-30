@@ -1,4 +1,4 @@
-import { WASocket, proto, downloadContentFromMessage, DownloadableMessage, MediaType, generateWAMessage, AnyMessageContent,  MessageGenerationOptions, generateMessageID } from "@adiwajshing/baileys-md";
+import { WASocket, proto, downloadContentFromMessage, DownloadableMessage, MediaType, generateWAMessage, AnyMessageContent,  MessageGenerationOptions } from "@adiwajshing/baileys-md";
 import axios, { AxiosResponse } from "axios";
 import { ExtractAndCheckUrl, RandomName, ParseExtensionFromMime } from "../../functions/functions";
 import Jimp from "jimp"
@@ -9,7 +9,7 @@ import * as fs from "fs";
 import util from "util";
 import Api from "./api";
 
-type AutoPath = { file: string, mimetype: FileType.MimeType | undefined, ext: FileType.FileExtension | undefined }
+type AutoPath = { file: string, mimetype: FileType.MimeType | undefined, ext: FileType.FileExtension | undefined };
 export default class Client {
 	constructor (public client: WASocket, public message: Messages.IMessages, public events: import("events").EventEmitter) {}
 	public sendText = async (from: string, text: string) => {
@@ -18,8 +18,11 @@ export default class Client {
 	public readonly API: Api = new Api();
 	public sock: WASocket = this.client;
 	public ev: import("events").EventEmitter = this.events;
+	public deleteFile = (name: string): void | Error => {
+		if (fs.existsSync(name)) return fs.unlinkSync(name);
+		else return new Error("File not found")
+	}
 	public reply = async (from: string, text: string, id?: proto.IWebMessageInfo) => {
-
 		return (await this.client.sendMessage(from, { text }, { quoted: id }))
 	}
 	public readonly prepareMessageFromContent = async (from: string, content: AnyMessageContent, options:  MessageGenerationOptions) => {
