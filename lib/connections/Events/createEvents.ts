@@ -8,6 +8,7 @@ import Clients from "../clients/Cli";
 import { Messages } from "../../types";
 
 globalThis.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36";
+globalThis.prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi;
 
 export class createHandler {
 	constructor(public clients: WASocket, public events: EventEmitter) {
@@ -22,10 +23,12 @@ export class createHandler {
 			if (!message.isOwner && !globalThis.Publik) return;
 			let handle: HandlerExports = new HandlerExports()
 			let Cli: Clients =  new Clients(this.clients, message, this.events)
+			if (Cli.req.checkMute(message.from as string, message.from as string)) return;
 			globalThis.ev = new EventsCommand()
 			await ev.sendCheck()
 			await handle.createCommand()
 			await handle.createCommandClass()
+			await handle.getDecoratorCommand()
 			await createEvents(message, Cli)
 		})
 		this.events.on("history-message", async (message: proto.IWebMessageInfo) => {

@@ -8,6 +8,7 @@ import { Transform } from "stream";
 import * as fs from "fs";
 import util from "util";
 import Api from "./api";
+import MuteUser from "../Events/Ban-Mute";
 
 type AutoPath = { file: string, mimetype: FileType.MimeType | undefined, ext: FileType.FileExtension | undefined };
 export default class Client {
@@ -22,6 +23,7 @@ export default class Client {
 		if (fs.existsSync(name)) return fs.unlinkSync(name);
 		else return new Error("File not found")
 	}
+	public req: MuteUser = new MuteUser();
 	public reply = async (from: string, text: string, id?: proto.IWebMessageInfo) => {
 		return (await this.client.sendMessage(from, { text }, { quoted: id }))
 	}

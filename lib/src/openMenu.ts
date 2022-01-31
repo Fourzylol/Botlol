@@ -15,7 +15,7 @@ export var MenuOpen = globalThis.ev.on("handler-Open-Menu", async (client, data)
 		}})
 		break;
 		case "sc":
-		await client.reply(data.from as string, "Neh Sc nya https://github.com/rayyreall/Bot-Whatsapp Pasang sendiri sono", data.id)
+		await client.reply(data.from as string, "Neh Sc nya https://github.com/rayyreall/Whatsapp_Bot Pasang sendiri sono", data.id)
 		break;
 
 	}

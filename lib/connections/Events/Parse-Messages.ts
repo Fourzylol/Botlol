@@ -1,6 +1,6 @@
 import { proto, WASocket, GroupMetadata, GroupParticipant } from "@adiwajshing/baileys-md";
 import type  { Messages } from "../../types";
-
+import { checkPrefix } from "../../functions/functions";
 
 export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, config: { parsed?: boolean} = { parsed: true}): Messages.IMessages {
 	var chats: Messages.IMessages = {};
@@ -82,10 +82,7 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 		}
 		return mentions
 	}
-	chats.prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi;
-	chats.Prefix = chats.prefix.test(chats.command) ? (chats.command.match(chats.prefix) as RegExpMatchArray)[0] : "Multi Prefix";
-	if (chats.Prefix) chats.isPrefix = chats.command?.startsWith(chats.Prefix)
-	else chats.isPrefix = false;
+	chats.Prefix = checkPrefix(globalThis.prefix, chats.command);
 	if (chats.media?.type as Messages.ParsedType === "sticker") chats.isQuotedStickerGif = (chats.media?.file as proto.IStickerMessage).isAnimated;
 	if (config?.parsed) {
 		for (const Parse in chats) {

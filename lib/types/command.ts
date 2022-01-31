@@ -20,6 +20,7 @@ export interface IEventsCmd {
 	isBotAdmins?: boolean;
 	antiSpam?: boolean;
 	skipMenu?: boolean;
+	costumePrefix?: string | RegExp | Array<string|RegExp>
 }
 export  type ICommands = IEventsCmd & IEventsHandler & ICommandss
 

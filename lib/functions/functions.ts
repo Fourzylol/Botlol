@@ -1,6 +1,8 @@
 import { MimeType } from "file-type";
 import parsems from "parse-ms";
 import type { Messages } from "../types";
+import { get } from "fast-levenshtein";
+import { remove } from "diacritics";
 
 export function isObject (obj: any): boolean {
 	return (obj && typeof obj === "object" && !Array.isArray(obj) && obj !== null)
@@ -63,4 +65,62 @@ export function Runtime(seconds: number): string {
 	let getData = parsems(seconds * 1000)
 	let Text: string = `${getData.days} Hari, ${getData.hours} Jam, ${getData.minutes} Menit, ${getData.seconds} Detik`
 	return Text
+}
+
+export function Checkker (kata: string, validasi: string): number  {
+	kata = remove(kata.toLocaleLowerCase().replace(/[^\w]+/g, ''));
+	validasi =  remove(validasi.toLocaleLowerCase().replace(/[^\w]+/g, ''));
+	let hitung: number = 1 - (get(kata, validasi) / Math.max(Math.max(kata.length, validasi.length), 1))
+	let hasil: string = (hitung * 100).toFixed(2)
+	return Number(hasil)
+}
+export function FindMatch (str: string, arr: string[]): Array<Array<string|unknown>> {
+	let obj: { [k: string]: number } = {}
+	for (const index of arr) {
+		if (!obj[index]) {
+			obj[index] = Checkker(str, index)
+		}
+	}
+	return Object.entries(obj).sort((a: [string, number], b: [string, number]) => b[1] - a[1]).filter((a: [string,number]) => a[1] > 65.00);
+}
+
+export function checkPrefix  (prefix: string | RegExp | Array<string | RegExp>, body: string): { match: boolean, prefix: string | undefined, body: string} | false  {
+	if (!body) return false;
+	if (typeof prefix === "string") {
+		return {
+			match: body.startsWith(prefix),
+			prefix: prefix,
+			body: body.replace(prefix, "")
+		};
+	} else
+	if (typeof prefix === "object") {
+		if (Array.isArray(prefix)) {
+			for (const value of prefix) {
+				if (typeof value === "string") {
+					if (body.startsWith(value)) return {
+						match: true,
+						prefix: value,
+						body: body.replace(value, "")
+					};
+				} else
+				if (typeof value === "object") {
+					if (value instanceof RegExp) {
+						if (body.match(value)) return {
+							match: true,
+							prefix: (value.exec(body))?.[0],
+							body: body.replace(value, "")
+						};
+					}
+				}
+			}
+		} else
+		if (prefix instanceof RegExp) {
+			if (body.match(prefix)) return {
+				match: true,
+				prefix: (prefix.exec(body))?.[0],
+				body: body.replace(prefix, "")
+			};
+		}
+	}
+	return false;
 }

@@ -1,14 +1,16 @@
 import * as fs from "fs";
 import type { ICommands,  Messages, ICommand, IEventsCmd  } from "../../types";
-import { isObject, getUrl } from "../../functions/functions";
+import { isObject, getUrl, FindMatch,  checkPrefix } from "../../functions/functions";
 import Clients from "../clients/Cli";
 import path from "path";
 import chalk from "chalk";
-import moment from "moment-timezone"
+import moment from "moment-timezone";
+import Cmd from "./cmdDecorator"
 
-var Events: any = {};
-var EventsClass: any = {};
-var EventsCallback: any = {};
+var Events: { [k: string]: ICommands | ICommand | IEventsCmd } = {};
+var EventsClass: { [k: string]: ICommands | ICommand | IEventsCmd } = {};
+var EventsCallback: { [k: string]: ICommands | ICommand | IEventsCmd } = {};
+var EventDecorator: { [k: string]: ICommands | ICommand | IEventsCmd } = {};
 const spam_detected: Set<string> = new Set<string>();
 const spam_notspam: Set<string> = new Set<string>();
 moment.tz.setDefault('Asia/Jakarta').locale('id');
@@ -36,7 +38,32 @@ export class HandlerExports {
 			...await this.combineObjectValues(globalThis.Events, Events)
 		}
     }
-	private combineObjectValues = (event_1: any, event_2: any): any => {
+	public getDecoratorCommand = async () => {
+		for (const file of fs.readdirSync("./lib/cmd").filter(ext => ext.endsWith(".ts"))) {
+			let respon: Cmd = new (await import(__dirname + "/../../cmd/" + file)).default();
+			if (!respon) continue;
+			if (!respon.config) continue;
+			if (!respon.callback) continue;
+			if (!respon.eventName) continue;
+			if (respon.config?.enable === undefined) respon.config["enable"] = true;
+			if (respon.config.isPrefix === undefined) respon.config.isPrefix = true;
+			if (respon.config.open === false && !respon.config.command) continue;
+			if (!respon.config.eventName) respon.config.eventName = respon.eventName;
+			if (!Object.keys(EventDecorator || "")[0]) {
+				EventDecorator[respon.config.eventName as string] = { ...respon.config, callback: respon.callback }
+			} else {
+				for (const getResponse in Events) {
+					if (getResponse !== respon.config.eventName) {
+						EventDecorator[respon.config.eventName as string] = { ...respon.config, callback: respon.callback }
+					}
+				}
+			}
+		}
+		globalThis.Events = {
+			...await this.combineObjectValues(globalThis.Events, EventDecorator)
+		}
+	}
+	private combineObjectValues = (event_1: any, event_2: any): Object => {
 		if (!event_1) event_1 = {};
 		if (isObject(event_1) && isObject(event_2)) {
 			for (const key in event_2) {
@@ -71,7 +98,7 @@ export class HandlerExports {
 }
 
 export class EventsCommand {
-	public Event: any = EventsCallback;
+	public Event: { [k: string]: ICommands | ICommand | IEventsCmd }= EventsCallback;
 	public async on (className: string, callback: (client: Clients, message: Messages.IMessages) => void, _event:  IEventsCmd) {
 		_event.enable = _event.enable ? _event.enable : true;
 		_event.isPrefix = (_event.isPrefix !== undefined) ? _event.isPrefix : true;
@@ -90,7 +117,7 @@ export class EventsCommand {
 	}
 	public  async sendCheck () {
 		for (const result of fs.readdirSync("./lib/src/").filter((value) => value.endsWith(".ts"))) {
-			const getImport: any = (await import(path.join(__dirname, "../../src/", result)))
+			const getImport = (await import(path.join(__dirname, "../../src/", result)))
 				for (let result in getImport) {
 					getImport[result]
 				}
@@ -110,14 +137,13 @@ export class EventsCommand {
 	}
 }
 
-
 async function createEvents (message: Messages.IMessages, Cli: Clients) {
 	if (globalThis.Events !== {}) {
 		try {
 			for (const Index in globalThis.Events) {
 				const event: ICommands = globalThis.Events[Index];
 				if (!event.enable && !event.isOwner) continue;
-				let cmd: string =  message.command?.replace(event.isPrefix ? message.Prefix as string : "", "") || "";
+				let cmd: string =  (checkPrefix(event.isPrefix ? event.costumePrefix ? event.costumePrefix : globalThis.prefix as typeof globalThis.prefix : "", message.command || "") as { match: boolean, prefix: string | undefined, body: string})?.body || "";
 				if (event.openCmd === undefined) event.openCmd = true;
 				if (event.open && !event.openCmd && event.callback && typeof event.callback === "function") event.callback(Cli, message as Messages.Messages);
 				if ((typeof event.command === "string" ? event.command === cmd : Array.isArray(event.command) ? (event.command as Array<string|RegExp>).some((values) => {
@@ -145,6 +171,22 @@ async function createEvents (message: Messages.IMessages, Cli: Clients) {
 							if (!!spam_detected.has(String(message.sender))) spam_detected.delete(String(message.sender));
 							if (!!spam_notspam.has(String(message.sender))) spam_notspam.delete(String(message.sender))
 						}, 5000)
+					}
+				} else {
+					let getAllCommand: Array<(string |RegExp | undefined)> = (Object.values(globalThis.Events) as Array<ICommands>).filter(event =>  typeof event.command === "string" || Array.isArray(event.command)).map(event => event.command).flat().filter(cmd => typeof cmd === "string");
+					getAllCommand = [...getAllCommand, ...(Object.values(globalThis.Events) as Array<ICommands>).filter(event => event.event).map(event => event.event).flat()]
+					getAllCommand = [...new Set(getAllCommand)]
+					if (typeof message.Prefix === "object" && FindMatch(cmd, getAllCommand as string[])?.[0] && !FindMatch(cmd, getAllCommand as string[]).map((value) => value.find((v) => v == 100.00))?.[0]) {
+						let match = FindMatch(cmd, getAllCommand as string[]);
+						let text: string = "*「❗」* Maaf kak, Perintah ini tidak dapat digunakan karena perintah tersebut tidak ditemukan, Mungkin Maksud anda adalah\n";
+						let num: number = 1;
+						if (match.length !== 0) {
+							for (const value of match) {
+								text += `\n\n${num++}. *${message.Prefix ? (message.Prefix.prefix === "") ? "" : message.Prefix.prefix : ""}${(value as Array<string|number>)[0]}* Dengan Rasio Keakuratan *${(value as Array<string|number>)[1]}%*`
+							}
+							text += `\n\nKetik *${message.Prefix ? (message.Prefix.prefix === "") ? "" : message.Prefix.prefix : ""}menu* Untuk melihat daftar perintah yang tersedia`;
+							return void await Cli.reply(message.from as string, text, message.id)
+						}
 					}
 				}
 			}

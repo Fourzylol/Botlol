@@ -37,13 +37,12 @@ export namespace Messages {
 		isQuotedAudio: boolean;
 		isQuotedDokumen: boolean;
 		isQuotedStickerGif: boolean | null | undefined;
-		prefix: string | RegExp | Array<string>;
-		Prefix: string;
-		isPrefix: boolean;
+		Prefix?:  PrefixCheck;
 		mimetype: string;
 		parseMentions: (text: string) => Promise<Array<string>>;
 		groupMetadata: () => Promise < HandlerGroupMetadata>;
 	}
+	type PrefixCheck = ReturnType<typeof import("../functions/functions").checkPrefix>;
 	export declare interface IMessages {
 		from?: string | undefined | null;
 		fromMe?: boolean | undefined | null;
@@ -76,9 +75,7 @@ export namespace Messages {
 		isQuotedAudio?: boolean;
 		isQuotedDokumen?: boolean;
 		isQuotedStickerGif?: boolean | null | undefined;
-		prefix?: string | RegExp | Array<string>;
-		Prefix?: string;
-		isPrefix?: boolean;
+		Prefix?:  PrefixCheck;
 		mimetype?: string;
 		parseMentions?: (text: string) => Promise<Array<string>>;
 		groupMetadata?: () => Promise < HandlerGroupMetadata>;

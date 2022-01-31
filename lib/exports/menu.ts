@@ -9,12 +9,12 @@ moment.tz.setDefault('Asia/Jakarta').locale('id')
 
 let command: ICommands = async (client, message) => {
 	const { isOwner } = message;
-	let data: any = {};
+	let data: { [k: string]: IEventsCmd} = {};
 	for (let index of Object.entries(globalThis.Events)) {
 		if (!(index[1] as IEventsCmd).tag) continue;
 		if (!(index[1] as IEventsCmd).event) continue;
-		if ((data[(index[1] as IEventsCmd).tag as string]) as IEventsCmd) data[(index[1] as IEventsCmd ).tag as string] =
-		[...data[(index[1] as IEventsCmd ).tag as string], Object.assign({}, index[1])]
+		if ((data[(index[1] as IEventsCmd).tag as string]) as IEventsCmd) (data[(index[1] as IEventsCmd ).tag as keyof typeof data] as any) =
+		[...data[(index[1] as IEventsCmd ).tag as string] as any, Object.assign({}, index[1])]
 		else {
 			Object.defineProperty(data, String((index[1] as IEventsCmd).tag), {
 				value: [index[1]],
@@ -35,21 +35,21 @@ let command: ICommands = async (client, message) => {
 *🪀 Creator* : @33753045534 ( *Ra* )
 *🌄 Lib* : Baileys
 *📜 Language :* Typescript
-*⚔️ Prefix :* ${message.Prefix}
+*⚔️ Prefix :* ${message.Prefix ? (message.Prefix.prefix === "") ? "No Prefix" : message.Prefix.prefix : "No Prefix"}
 *🕵🏻‍♂️ Github :* rayyreall
 *🌚 Instagram :* @rayyreall
 *🔑 Apikey* : Ga Pake
 ${(process.env.server !== undefined) ? "*🗄 Server :* " + process.env.server : ""} 
-*👾 SC :* https://github.com/rayyreall/Bot-Whatsapp\n\n`
+*👾 SC :* https://github.com/rayyreall/Whatsapp_Bot\n\n`
 
 for (let index of Object.entries(data)) {
 	if ((index[1] as IEventsCmd[]).filter((values) => values.skipMenu !== true).length !== 0) 	text += `\n\n            *MENU ${index[0].toUpperCase()}*\n\n`;
 	for (let values of (index[1]) as IEventsCmd []) {
 		if (values.skipMenu === true) continue;
-		if (typeof values.event === "string") text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix : "") + values.event +"*\n";
+		if (typeof values.event === "string") text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix ? message.Prefix.prefix : "" : "") + values.event +"*\n";
 		else if (Array.isArray(values.event))  {
 			for (let getArray of values.event) {
-				text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix : "")  +getArray +"*\n"
+				text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix ? message.Prefix.prefix : "" : "")  +getArray +"*\n"
 			}
 		}
 	}
@@ -84,7 +84,7 @@ return void await client.client.relayMessage(message.from as string, proto.Messa
 			type: 1
 		}],
 		contextInfo: proto.ContextInfo.fromObject({
-			mentionedJid: ["33753045534@s.whatsapp.net"]
+			mentionedJid: ["33753045534@s.whatsapp.net", String(message.sender)]
 		}),
 		headerType: 4,
 		imageMessage: proto.ImageMessage.fromObject((await generateWAMessage(message.from as string, { image: {
