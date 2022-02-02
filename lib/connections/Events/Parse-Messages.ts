@@ -1,6 +1,6 @@
 import { proto, WASocket, GroupMetadata, GroupParticipant } from "@adiwajshing/baileys-md";
 import type  { Messages } from "../../types";
-import { checkPrefix } from "../../functions/functions";
+import { checkPrefix, ParseJid } from "../../functions/functions";
 
 export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, config: { parsed?: boolean} = { parsed: true}): Messages.IMessages {
 	var chats: Messages.IMessages = {};
@@ -8,7 +8,7 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 	const messageType: Array<keyof proto.IMessage> = ["conversation", ...mediaType, "contactMessage",  "extendedTextMessage", "contactsArrayMessage", "liveLocationMessage", "templateMessage", "stickerMessage",
 "groupInviteMessage", "templateButtonReplyMessage", "productMessage", "listMessage", "viewOnceMessage", "orderMessage", "listResponseMessage", "buttonsMessage", "buttonsResponseMessage", "interactiveMessage",
 "reactionMessage", "stickerSyncRmrMessage"];
-	chats.from = mess.key.remoteJid;
+	chats.from = ParseJid(mess.key.remoteJid as string);
 	chats.fromMe = mess.key.fromMe;
 	chats.pushName = mess.pushName;
 	chats.message = mess.message?.ephemeralMessage || mess;
@@ -45,11 +45,11 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 		mimetype:  ((chats.message.message as proto.IMessage)?.[chats.type as Messages.TypesMedia] as proto.IImageMessage | proto.IVideoMessage | proto.IAudioMessage | proto.IDocumentMessage | proto.IStickerMessage).mimetype?.split("/")[1]
 	}
 	chats.sender = mess.key.fromMe ? client?.user?.id : chats.isGroupMsg ? mess.key.participant : mess.key.remoteJid;
-	if (chats.sender) chats.sender = `${(chats.sender.match(/([\d+\-])/gi) as RegExpMatchArray).join("")}@s.whatsapp.net`;
-	if (chats.from) chats.from = `${chats.isGroupMsg ? chats.from : chats.sender}`;
+	if (chats.sender) chats.sender = ParseJid(chats.sender as string);
 	let [command, ...args]: string[] = chats.body ? chats.body.split(" ") : [];
 	chats.command = command?.toLowerCase();
 	chats.args = args || [];
+	chats.querry = chats?.args?.join(" ");
 	chats.ownerNumber = ['33753045534@s.whatsapp.net', chats.botNumber as `${number}@s.whatsapp.net`];
 	chats.isOwner = chats.ownerNumber.includes(chats.sender as `${number}@s.whatsapp.net`);
 	chats.isMedia = chats.type === 'imageMessage' || chats.type === 'videoMessage' || chats.typeQuoted === "imageMessage" || chats.typeQuoted === "videoMessage";
@@ -65,7 +65,7 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 	if (chats.isGroupMsg) chats.groupMetadata = async () => {
 		const groupMetadata: GroupMetadata =  await client.groupMetadata(chats.from as string);
 		const groupMember: GroupParticipant[] = groupMetadata.participants;
-		const groupAdmins: string[] = groupMember.filter((value) => value.isAdmin).map((values) => values.id);
+		const groupAdmins: string[] = groupMember.filter((value) => value.admin).map((values) => values.id);
 		const isGroupAdmins: boolean = groupAdmins.includes(chats.sender as string);
 		const isBotAdmins: boolean = groupAdmins.includes(chats.botNumber as string)
 		const ownerGroup: string | null | undefined = groupMetadata.owner;

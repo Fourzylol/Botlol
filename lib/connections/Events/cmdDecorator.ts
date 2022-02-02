@@ -13,4 +13,4 @@ export const Cmd = (eventName: string, config: IEventsCmd) => {
 		target.prototype.config = { eventName, ...config }
 	}
 }
-export declare type getCallback = (client: Clients, message: Messages.IMessages) => void | Promise<void>;
+export declare type getCallback = (client: Clients, message: Messages.Messages) => void | Promise<void| any> | any;

@@ -5,6 +5,5 @@ declare global {
 	var ev:  import("../connections/Events/command").EventsCommand;
 	var HistoryMsg: boolean;
 	var UserAgent: string;
-	var Publik: boolean;
 	var prefix: string | RegExp | Array<string|RegExp>;
 }

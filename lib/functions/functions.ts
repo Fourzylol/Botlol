@@ -10,7 +10,7 @@ export function isObject (obj: any): boolean {
 
 export function ExtractAndCheckUrl (text: string): import("../types").ExtractUrlType {
 	let regexUrl: RegExp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi
-	let getUrl: RegExpMatchArray| null = text.match(regexUrl);
+	let getUrl: RegExpMatchArray| null = text?.match(regexUrl);
 	let respon: import("../types").ExtractUrlType;
 	if (getUrl) respon = {
 		url: [...getUrl as RegExpMatchArray],
@@ -123,4 +123,36 @@ export function checkPrefix  (prefix: string | RegExp | Array<string | RegExp>, 
 		}
 	}
 	return false;
+}
+export function ParseJid (jid: string): string {
+	if (/@g.us/gi.test(jid)) {
+		return jid
+	} else if (/@s.whatsapp.net/gi.test(jid) && /\:/g.test(jid)) {
+		return jid.split(":")[0] + "@s.whatsapp.net";
+	} else {
+		return jid
+	}
+}
+
+export function  convertTime (time: string): number {
+	const regex: RegExp = /(\d+)([dhms])/g;
+	let result: number = 0;
+	let match: RegExpExecArray | null;
+	while ((match = regex.exec(time)) !== null) {
+		switch (match[2]) {
+			case "d":
+				result += parseInt(match[1]) * 86400 * 1000;
+				break;
+			case "h":
+				result += parseInt(match[1]) * 3600 * 1000;
+				break;
+			case "m":
+				result += parseInt(match[1]) * 60 * 1000;
+				break;
+			case "s":
+				result += parseInt(match[1]) * 1000;
+				break;
+		}
+	}
+	return result;
 }

@@ -21,3 +21,5 @@ export declare interface YoutubeDlCore {
 	thumbnail: string;
 	desk: string;
 }
+
+export declare type ConfigYTSearch = ({ querry: string, infoAll?: boolean } | { videoId: string } | { url: string }) & { getFirst?: boolean };

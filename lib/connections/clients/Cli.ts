@@ -8,7 +8,7 @@ import { Transform } from "stream";
 import * as fs from "fs";
 import util from "util";
 import Api from "./api";
-import MuteUser from "../Events/Ban-Mute";
+import HandlerProcess from "../Events/Ban-Mute";
 
 type AutoPath = { file: string, mimetype: FileType.MimeType | undefined, ext: FileType.FileExtension | undefined };
 export default class Client {
@@ -23,14 +23,13 @@ export default class Client {
 		if (fs.existsSync(name)) return fs.unlinkSync(name);
 		else return new Error("File not found")
 	}
-	public req: MuteUser = new MuteUser();
 	public reply = async (from: string, text: string, id?: proto.IWebMessageInfo) => {
 		return (await this.client.sendMessage(from, { text }, { quoted: id }))
 	}
 	public readonly prepareMessageFromContent = async (from: string, content: AnyMessageContent, options:  MessageGenerationOptions) => {
 		return new Promise <proto.WebMessageInfo> (async (resolve) => resolve(await generateWAMessage(from, content, options)))
 	}
-	
+	public readonly req: HandlerProcess = new HandlerProcess();
 	public readonly decryptMedia = async (media: Messages.IMedia, save?: boolean, path?: string): Promise <string | Buffer> => {
 		try {
 			const Stream: Transform = await downloadContentFromMessage(media.file as DownloadableMessage , media.type as MediaType)
@@ -121,9 +120,9 @@ export default class Client {
 			ext: checkFile?.ext
 		}
 	}
-	public compressImage = async (file: Buffer | string) => {
-		const jimp = await Jimp.read(file as any)
-		const result = await jimp.resize(48, 48).getBufferAsync(Jimp.MIME_JPEG)
+	public compressImage = async (file: Buffer | string): Promise <Buffer> => {
+		const jimp: Jimp = await Jimp.read(file as any)
+		const result: Buffer = await jimp.resize(48, 48).getBufferAsync(Jimp.MIME_JPEG)
 		return result;
 	}
 	public getBuffer = async (media: string): Promise <{ file: Buffer, ext: string, mimetype: string }| undefined> => {
@@ -136,7 +135,9 @@ export default class Client {
 					mimetype: Type?.mime as string
 				}
 			} else if (ExtractAndCheckUrl(media).isDetect) {
-				let File: AxiosResponse = (await axios.get<Buffer>(ExtractAndCheckUrl(media).first_url, { responseType: "arraybuffer" }))
+				let File: AxiosResponse = (await axios.get<Buffer>(ExtractAndCheckUrl(media).first_url, { responseType: "arraybuffer", headers: {
+					"User-Agent": globalThis.UserAgent
+				} }))
 				return {
 					file: File.data,
 					ext: File.headers["Content-Type"]?.split("/")[1] || (await FileType.fromBuffer(File.data))?.ext as string,

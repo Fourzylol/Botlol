@@ -23,6 +23,7 @@ export namespace Messages {
 		sender: string | null;
 		command: string;
 		args: string[];
+		querry: string;
 		ownerNumber: `${number}@s.whatsapp.net`[];
 		quotedBody: string | null ;
 		isOwner: boolean;
@@ -61,6 +62,7 @@ export namespace Messages {
 		sender?: string | null;
 		command?: string;
 		args?: string[];
+		querry?: string;
 		ownerNumber?: `${number}@s.whatsapp.net`[];
 		quotedBody?: string | null ;
 		isOwner?: boolean;

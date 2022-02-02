@@ -46,10 +46,11 @@ for (let index of Object.entries(data)) {
 	if ((index[1] as IEventsCmd[]).filter((values) => values.skipMenu !== true).length !== 0) 	text += `\n\n            *MENU ${index[0].toUpperCase()}*\n\n`;
 	for (let values of (index[1]) as IEventsCmd []) {
 		if (values.skipMenu === true) continue;
-		if (typeof values.event === "string") text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix ? message.Prefix.prefix : "" : "") + values.event +"*\n";
+		if (typeof values.event === "string") text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix ? message.Prefix.prefix : "" : "") + values.event  + `${values.description ? ` <${values.description}>` : ""}` +"*\n";
+
 		else if (Array.isArray(values.event))  {
 			for (let getArray of values.event) {
-				text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix ? message.Prefix.prefix : "" : "")  +getArray +"*\n"
+				text += "*ℒ⃝🕊️ •* *" + (values.isPrefix ? message.Prefix ? message.Prefix.prefix : "" : "")  + getArray + `${values.description ? ` <${values.description}>` : ""}` +"*\n"
 			}
 		}
 	}

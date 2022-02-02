@@ -6,6 +6,7 @@ import { ChatUpdate } from "../Events/Parse-Messages";
 import createEvents, { HandlerExports, EventsCommand } from "./command";
 import Clients from "../clients/Cli";
 import { Messages } from "../../types";
+import { Saklar } from "./Ban-Mute";
 
 globalThis.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36";
 globalThis.prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi;
@@ -20,15 +21,15 @@ export class createHandler {
 			if (message.message) this.events.emit("message-new",  ChatUpdate(message, clients))
 		})
 		this.events.on("message-new", async (message: Messages.IMessages) => {
-			if (!message.isOwner && !globalThis.Publik) return;
 			let handle: HandlerExports = new HandlerExports()
 			let Cli: Clients =  new Clients(this.clients, message, this.events)
-			if (Cli.req.checkMute(message.from as string, message.from as string)) return;
 			globalThis.ev = new EventsCommand()
 			await ev.sendCheck()
 			await handle.createCommand()
 			await handle.createCommandClass()
 			await handle.getDecoratorCommand()
+			if (((await import("./Ban-Mute")).DEFAULT_PUBLIC === Saklar.OFF) && !message.isOwner) return;
+			if ((Cli.req.checkMute(String(message.from)) || Cli.req.checkMute(String(message.sender))) && !message.isOwner) return;
 			await createEvents(message, Cli)
 		})
 		this.events.on("history-message", async (message: proto.IWebMessageInfo) => {

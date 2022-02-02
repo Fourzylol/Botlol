@@ -1,7 +1,9 @@
 import axios from "axios";
 import cheerio from "cheerio";
 import ytdl, { videoFormat, videoInfo } from "ytdl-core";
+import ytSearch, { SearchResult, VideoMetadataResult, VideoSearchResult } from "yt-search"
 import { config } from "dotenv";
+import type { ConfigYTSearch  } from "../../../types"
 import filesize from "filesize";
 config({ path: "./.env"})
 
@@ -50,6 +52,7 @@ export default class Youtube {
 			} catch (err) {
 				return reject(err)
 			} finally {
+				if (!Upload) return reject(new Error("No Upload found"))
 				return resolve({
 					link: ((await import("../../../functions/functions")).ExtractAndCheckUrl(Upload).url)?.[0],
 					thumb: cheerio.load(getParams)('div.thumbnail.cover').find('a > img').attr('src') || '',
@@ -101,5 +104,29 @@ export default class Youtube {
 			thumbnail: data.videoDetails.thumbnails.find((filter) => filter.width === 1920)?.url,
 			desk: data.videoDetails.description
 		} as import("../../../types").YoutubeDlCore
+	}
+	public readonly ytSearch = async (config: ConfigYTSearch): Promise <VideoMetadataResult | VideoMetadataResult[] | SearchResult | VideoSearchResult[] | VideoSearchResult> => {
+		return new Promise <VideoMetadataResult | VideoMetadataResult[] | SearchResult | VideoSearchResult[] | VideoSearchResult>(async (resolve) => {
+			let engine: Promise<SearchResult|VideoMetadataResult> | null;
+			if ("querry" in config) engine = ytSearch(config.querry);
+			else if ("videoId" in config) engine = ytSearch({ videoId: config.videoId });
+			else if ("url" in config && this.regexYoutube.exec(config.url)) engine = ytSearch({videoId: String(this.regexYoutubeId.exec(config.url)?.[1])});
+			else engine = null;
+			if (!engine) return;
+			const result: SearchResult | VideoMetadataResult = (await Promise.all([engine]))[0];
+			if ("querry" in config && config.infoAll) {
+				let data: Array<VideoMetadataResult> = new Array();
+				for (const Index of (result as SearchResult).videos) {
+					data.push(await ytSearch({ videoId: Index.videoId }))
+				}
+				if ("getFirst" in config && config.getFirst) return resolve(data[0]);
+				else return resolve(data);
+			} else if ("querry" in config) {
+				if ("getFirst" in config && config.getFirst) return resolve((result as SearchResult).videos[0]);
+				else return resolve((result as SearchResult).videos);
+			} else {
+				return resolve(result);
+			}
+		});
 	}
 }
