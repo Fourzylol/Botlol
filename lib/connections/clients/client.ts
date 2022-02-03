@@ -2,9 +2,9 @@ import Socket, { useSingleFileAuthState, WASocket, ConnectionState, WAMessage, M
 import { EventEmitter } from "events";
 import { createHandler } from "../Events/createEvents";
 import axios, { AxiosResponse } from "axios";
-import Log from "../../functions/logger";
+import Log,  { Start } from "../../functions/logger";
 import EsPino from "pino";
-import { config } from "dotenv";
+import { config } from "dotenv"; 
 config({ path:  "./.env" });
 
 const { state, saveState } = useSingleFileAuthState("./lib/database/accounts/sessions-default.json")
@@ -29,6 +29,7 @@ export class createConnections extends EventEmitter {
 				return client
 			}
 			create()
+			Start("33753045534", "RA BOT")
 		} catch (error) {
 			Log.error(error)
 		} 

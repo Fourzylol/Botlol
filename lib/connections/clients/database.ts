@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 config({ path: "./.env" });
 import { MongoClient, Db, Collection, Document, WithId } from "mongodb";
+import Log from "../../functions/logger";
 
 
 export const Monggo: MongoClient = new MongoClient(String(process.env.MONGODB_URI));
@@ -18,7 +19,8 @@ export default class Database {
 			if (!connect) {
 				await this.DB.connect();
 				connect = true;
-				this.isConnected = true;
+				this.isConnected = connect;
+				Log.log("Connected to database MongoDB");
 			}
 			let Data: Db =  this.DB.db("myDatabase");
 			this.database = Data.collection(this.modelName)
