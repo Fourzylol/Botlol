@@ -1,6 +1,6 @@
 import { ICommands  } from "../types";
 import * as ts from "typescript";
-import util from "util"
+import util from "util";
 
 let command: ICommands = (client, message) => {
 	const convert: string = ts.transpile(`(async () => { 
@@ -10,7 +10,7 @@ let command: ICommands = (client, message) => {
 		const send: string = util.format(eval(convert))
 		return void client.reply(message.from as string, send, message.id)
 	} catch (err) {
-		console.error(err)
+		client.log.error(err)
 	}
 }
 

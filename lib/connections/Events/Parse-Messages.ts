@@ -8,7 +8,7 @@ export function ChatUpdate (mess: proto.IWebMessageInfo, client: WASocket, confi
 	const messageType: Array<keyof proto.IMessage> = ["conversation", ...mediaType, "contactMessage",  "extendedTextMessage", "contactsArrayMessage", "liveLocationMessage", "templateMessage", "stickerMessage",
 "groupInviteMessage", "templateButtonReplyMessage", "productMessage", "listMessage", "viewOnceMessage", "orderMessage", "listResponseMessage", "buttonsMessage", "buttonsResponseMessage", "interactiveMessage",
 "reactionMessage", "stickerSyncRmrMessage"];
-	chats.from = ParseJid(mess.key.remoteJid as string);
+	chats.from = String(ParseJid(mess.key.remoteJid as string));
 	chats.fromMe = mess.key.fromMe;
 	chats.pushName = mess.pushName;
 	chats.message = mess.message?.ephemeralMessage || mess;

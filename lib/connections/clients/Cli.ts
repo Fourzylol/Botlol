@@ -1,7 +1,7 @@
 import { WASocket, proto, downloadContentFromMessage, DownloadableMessage, MediaType, generateWAMessage, AnyMessageContent,  MessageGenerationOptions } from "@adiwajshing/baileys-md";
 import axios, { AxiosResponse } from "axios";
 import { ExtractAndCheckUrl, RandomName, ParseExtensionFromMime } from "../../functions/functions";
-import Jimp from "jimp"
+import sharp from "sharp";
 import { Messages  } from '../../types';
 import FileType, { FileTypeResult } from "file-type"
 import { Transform } from "stream";
@@ -9,6 +9,8 @@ import * as fs from "fs";
 import util from "util";
 import Api from "./api";
 import HandlerProcess from "../Events/Ban-Mute";
+import Database from "./database";
+import Log from "../../functions/logger";
 
 type AutoPath = { file: string, mimetype: FileType.MimeType | undefined, ext: FileType.FileExtension | undefined };
 export default class Client {
@@ -29,6 +31,11 @@ export default class Client {
 	public readonly prepareMessageFromContent = async (from: string, content: AnyMessageContent, options:  MessageGenerationOptions) => {
 		return new Promise <proto.WebMessageInfo> (async (resolve) => resolve(await generateWAMessage(from, content, options)))
 	}
+	public db = async (modelName: string): Promise<Database> => {
+		let database: Database = new Database(modelName);
+		if (database.isConnected) await database.connect;
+		return database
+	}
 	public readonly req: HandlerProcess = new HandlerProcess();
 	public readonly decryptMedia = async (media: Messages.IMedia, save?: boolean, path?: string): Promise <string | Buffer> => {
 		try {
@@ -46,7 +53,7 @@ export default class Client {
 				return buffer;
 			}
 		} catch (err) {
-			console.log(err)
+			Log.error(err)
 			return String(new Error(String(err)))
 		}
 	}
@@ -104,10 +111,10 @@ export default class Client {
 				await this.client.sendMessage(from, {...config as any, ...settings, mentions: settings.isMentions ? [...await (this.message.parseMentions)?.(settings.caption || "") as string[]] : [], }, { ...settings })
 				if (Buffer.isBuffer(media) && fs.existsSync(String(File?.file))) fs.unlinkSync(String(File?.file))
 			} else {
-				return console.error(new Error("can't convert the media you want to send"))
+				return Log.error(new Error("can't convert the media you want to send"))
 			}
 		} catch (err) {
-			console.log(err)
+			Log.error(err)
 		}
 	}
 	private AutoSave = async (media: Buffer): Promise <AutoPath> => {
@@ -121,10 +128,9 @@ export default class Client {
 		}
 	}
 	public compressImage = async (file: Buffer | string): Promise <Buffer> => {
-		const jimp: Jimp = await Jimp.read(file as any)
-		const result: Buffer = await jimp.resize(48, 48).getBufferAsync(Jimp.MIME_JPEG)
-		return result;
+		return await sharp(file).resize(48, 48).toBuffer();;
 	}
+	public log: import("../../types").Log = Log;
 	public getBuffer = async (media: string): Promise <{ file: Buffer, ext: string, mimetype: string }| undefined> => {
 		if (typeof media === "string") {
 			if (fs.existsSync(media)) {

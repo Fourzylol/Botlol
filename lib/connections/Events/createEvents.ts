@@ -1,12 +1,13 @@
 import { WASocket, ConnectionState, DisconnectReason, proto } from "@adiwajshing/baileys-md";
-import * as fs from "fs";
 import { EventEmitter } from "events";
-import { Boom } from "@hapi/boom";
+import type { Boom } from "@hapi/boom";
 import { ChatUpdate } from "../Events/Parse-Messages";
 import createEvents, { HandlerExports, EventsCommand } from "./command";
 import Clients from "../clients/Cli";
-import { Messages } from "../../types";
+import type { Messages, HistoryDB } from "../../types";
 import { Saklar } from "./Ban-Mute";
+import Database from "../clients/database";
+import Log from "../../functions/logger";
 
 globalThis.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36";
 globalThis.prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi;
@@ -35,20 +36,15 @@ export class createHandler {
 		this.events.on("history-message", async (message: proto.IWebMessageInfo) => {
 			if (message.key.remoteJid == "status@broadcast") return;
 			const { botNumber, from, sender } = ChatUpdate(message, clients);
-			let Path: string = "./lib/database/history/" + botNumber + "-" + from + ".json";
-			if (!fs.existsSync(Path)) fs.writeFileSync(Path, JSON.stringify([]));
-			else {
-				let file: Array<Messages.HistorysMessages> = JSON.parse(fs.readFileSync(Path).toString());
-				let Format: Messages.HistorysMessages  =  {
-					id: from as string,
-					sender: sender as string,
-					time: Date.now(),
-					message
-				}
-				file.push(Format);
-				fs.writeFileSync(Path, JSON.stringify(file))
+			let db: Database = new Database("history-message");
+			if (db.isConnected) await db.connect;
+			if (from) {
+				if (await db.Test({ id: from })) {
+					let getConfig: HistoryDB  = await db.search({ id: from}) as any;
+					if (getConfig?.data) await db.setConfig(from, { data: [ ...getConfig.data, { id: from, sender, msg: ChatUpdate(message, clients), botNumber, time: Date.now()}] })
+				} else await db.setConfig(from, { data: [ { id: from, sender, msg: ChatUpdate(message, clients), botNumber, time: Date.now()} ]})
 			}
-		})
+		});
 	}
 	private HandlerConditions = () => {
 		this.events.on("check-condition", (conditions: Partial<ConnectionState>, create) => {
@@ -57,7 +53,7 @@ export class createHandler {
 					if ((conditions.lastDisconnect?.error as Boom).output.statusCode !== DisconnectReason.loggedOut) {
 						create()
 					} else {
-						throw console.error(new Error("Connection Close"))
+						throw Log.error(new Error("Connection Close"))
 					}
 					break
 			}

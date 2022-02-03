@@ -2,6 +2,7 @@ import Socket, { useSingleFileAuthState, WASocket, ConnectionState, WAMessage, M
 import { EventEmitter } from "events";
 import { createHandler } from "../Events/createEvents";
 import axios, { AxiosResponse } from "axios";
+import Log from "../../functions/logger";
 import EsPino from "pino";
 import { config } from "dotenv";
 config({ path:  "./.env" });
@@ -29,7 +30,7 @@ export class createConnections extends EventEmitter {
 			}
 			create()
 		} catch (error) {
-			console.error(error)
+			Log.error(error)
 		} 
 	}
 	private DEFAULT_URL_VERSION: string = "https://web.whatsapp.com/check-update?version=1&platform=web";

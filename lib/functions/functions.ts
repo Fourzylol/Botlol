@@ -156,3 +156,21 @@ export function  convertTime (time: string): number {
 	}
 	return result;
 }
+
+export function ParseStringCmd (str: string): any {
+	let data: { [k: string]: any } = {};
+	let args: string[] = str.split("--");
+	args.forEach((arg: string) => {
+		let argData: string[] = arg.split(" ").filter((v) => v);
+		if (argData.length > 1) {
+			data[argData[0]] = argData.slice(1).join(" ");;
+		}
+	})
+	let filter: any = Object.keys(data).reduce((acc: any, key: string) => {
+		if (!data[key] !== undefined) {
+			acc[key] = data[key];
+		}
+		return acc;
+	}, {})
+	return filter
+}

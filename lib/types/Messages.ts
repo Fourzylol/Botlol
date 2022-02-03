@@ -6,7 +6,7 @@ export namespace Messages {
 	export declare type TypesFile = "document" |	"image"| "video"| "audio" | "sticker";
 	export declare type KeyChats = keyof IMessages;
 	export declare interface Messages {
-		from: string | undefined | null;
+		from: string;
 		fromMe: boolean | undefined | null;
 		pushName: string | null | undefined;
 		message: proto.IFutureProofMessage;
@@ -45,7 +45,7 @@ export namespace Messages {
 	}
 	type PrefixCheck = ReturnType<typeof import("../functions/functions").checkPrefix>;
 	export declare interface IMessages {
-		from?: string | undefined | null;
+		from?: string;
 		fromMe?: boolean | undefined | null;
 		pushName?: string | null | undefined;
 		message?: proto.IFutureProofMessage;

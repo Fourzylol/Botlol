@@ -5,7 +5,8 @@ import Clients from "../clients/Cli";
 import path from "path";
 import chalk from "chalk";
 import moment from "moment-timezone";
-import Cmd from "./cmdDecorator"
+import Cmd from "./cmdDecorator";
+import Log from "../../functions/logger";
 
 var Events: { [k: string]: ICommands | ICommand | IEventsCmd } = {};
 var EventsClass: { [k: string]: ICommands | ICommand | IEventsCmd } = {};
@@ -99,7 +100,7 @@ export class HandlerExports {
 
 export class EventsCommand {
 	public Event: { [k: string]: ICommands | ICommand | IEventsCmd }= EventsCallback;
-	public async on (className: string, callback: (client: Clients, message: Messages.IMessages) => void, _event:  IEventsCmd) {
+	public async on (className: string, callback: (client: Clients, message: Messages.Messages) => void, _event:  IEventsCmd) {
 		_event.enable = _event.enable ? _event.enable : true;
 		_event.isPrefix = (_event.isPrefix !== undefined) ? _event.isPrefix : true;
 		_event.eventName = className
@@ -164,9 +165,9 @@ async function createEvents (message: Messages.IMessages, Cli: Clients) {
 						spam_detected.add(String(message.sender));
 						if (event.callback && typeof event.callback === "function") await event.callback(Cli, message as Messages.Messages)
 					} catch (err) {
-						console.error(err)
+						Log.error(err)
 					} finally {
-						console.info(chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.keyword('blue')(`[\x1b[1;32m${chalk.hex('#009940').bold('RECORD')}]`), chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'),chalk.cyan('\x1bmSTATUS :\x1b'), chalk.hex('#fffb00')(message.fromMe ? 'SELF' : 'PUBLIK'), chalk.greenBright('[COMMAND]'), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.blueBright(message.command), chalk.hex('#f7ef07')(`[${message.args?.length}]`),chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'), chalk.hex('#26d126')('[PENGIRIM]'),chalk.hex('#f505c1')(message.pushName), chalk.hex('#ffffff')(`(${message.sender?.replace(/@s.whatsapp.net/i, '')})`), chalk.greenBright('IN'), chalk.hex('#0428c9')(`${(await (message.groupMetadata)?.())?.groupMetadata?.subject}`), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.hex('#f2ff03')('[DATE] =>'),chalk.greenBright(moment(new Date()).format('LLLL').split(' GMT')[0]))
+						Log.info(chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.keyword('blue')(`[\x1b[1;32m${chalk.hex('#009940').bold('RECORD')}]`), chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'),chalk.cyan('\x1bmSTATUS :\x1b'), chalk.hex('#fffb00')(message.fromMe ? 'SELF' : 'PUBLIK'), chalk.greenBright('[COMMAND]'), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.blueBright(message.command), chalk.hex('#f7ef07')(`[${message.args?.length}]`),chalk.red.bold('\x1b[1;31m=\x1b[1;37m>'), chalk.hex('#26d126')('[PENGIRIM]'),chalk.hex('#f505c1')(message.pushName), chalk.hex('#ffffff')(`(${message.sender?.replace(/@s.whatsapp.net/i, '')})`), chalk.greenBright('IN'), chalk.hex('#0428c9')(`${(await (message.groupMetadata)?.())?.groupMetadata?.subject}`), chalk.keyword('red')('\x1b[1;31m~\x1b[1;37m>'), chalk.hex('#f2ff03')('[DATE] =>'),chalk.greenBright(moment(new Date()).format('LLLL').split(' GMT')[0]))
 						setTimeout(() => {
 							if (!!spam_detected.has(String(message.sender))) spam_detected.delete(String(message.sender));
 							if (!!spam_notspam.has(String(message.sender))) spam_notspam.delete(String(message.sender))
@@ -191,7 +192,7 @@ async function createEvents (message: Messages.IMessages, Cli: Clients) {
 				}
 			}
 		} catch (err) {
-			console.error(new Error(String(err)))
+			Log.error(new Error(String(err)))
 		}
 	}
 }

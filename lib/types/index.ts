@@ -5,3 +5,4 @@ export * from "./func";
 export * from "./tools";
 export * from "./api";
 export * from "./sticker";
+export * from "./db";

@@ -1,3 +1,5 @@
+import Database from "../clients/database";
+
 enum Saklar {
 	ON = 1,
 	OFF = 0
@@ -13,10 +15,16 @@ let Mute_Event: Map<string, Mute> = new Map<string, Mute>();
 
 
 class HandlerCommand {
+	public dbBanned: Promise<Database>;
 	constructor () {
+		this.dbBanned = new Promise<Database>(async (resolve, reject) => {
+			let database: Database = new Database("banned");
+			await database.connect;
+			return resolve(database)
+		})
 		setInterval(() => {
 			Mute_Event.forEach((value, key) => {
-				if (value.time && value.time <= Date.now()) Mute_Event.delete(key)
+				if (value.time && value.time <= Date.now() && value.status === Saklar.ON && value.id)  this.setMute({ jid: key, status: Saklar.OFF })
 			})
 		}, 1000);
 	};
@@ -35,6 +43,23 @@ class HandlerCommand {
 	public checkMute (jid: string): boolean {
 		return Mute_Event.has(jid) ? Mute_Event.get(jid)?.status === Saklar.ON : false;
 	}
+	public async setBanned (config: { jid: string, status: Saklar }) {
+		let db: Database = await this.dbBanned;
+		if (await db.Test({ id: config.jid })) {
+			return await db.setConfig(config.jid, { ...config })
+		} else {
+			return await db.setConfig(config.jid, { ...config })
+		}
+	}
+	public async checkBanned (jid: string): Promise <boolean> {
+		let db: Database = await this.dbBanned;
+		if (await db.Test({ id: jid })) {
+			return true
+		} else {
+			return false
+		}
+	}
+
 }
 
 export default HandlerCommand;
