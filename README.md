@@ -94,5 +94,6 @@ ____
 - ⭐️ [Adiwajshing](https://github.com/adiwajshing)
 - ⭐️ [AlenSaito1](https://github.com/AlenSaito1)
 - ⭐️ [Rull](https://github.com/arl03)
+- ⭐️ [Fauzan](https://github.com/Fau-Zan)
 - Dll
 </p>
