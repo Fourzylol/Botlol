@@ -95,5 +95,6 @@ ____
 - ⭐️ [AlenSaito1](https://github.com/AlenSaito1)
 - ⭐️ [Rull](https://github.com/arl03)
 - ⭐️ [Fauzan](https://github.com/Fau-Zan)
+- ⭐️ [ichizza](https://github.com/ichizza)
 - Dll
 </p>
