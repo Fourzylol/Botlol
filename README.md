@@ -1,4 +1,4 @@
-<h2 align="center"><br>Hi, I`am Ra 👋 <br/></h2>;
+<h2 align="center"><br>Hi, I`am fourzy👋 <br/></h2>;
 
 <p align="center"><img width=30% src="https://i.ibb.co/cwKfKsv/IMG-20210519-202626.jpg"></p>
 
@@ -48,8 +48,8 @@ ____
 ## RUNNING BOT
 
 ```bash
-git clone https://github.com/rayyreall/Whatsapp_Bot
-cd Whatsapp_Bot
+git clone https://github.com/FourzyLol/Botlol
+cd Botlol
 npm bash
 npm start
 ```
@@ -57,7 +57,7 @@ npm start
 
 ### CONFIGURATIONS
 
-* Setting Config In .env [`Click`](https://github.com/rayyreall/Whatsapp_Bot/blob/master/.env)
+* Setting Config In .env [`Click`](https://github.com/FourzyLol/Botlol/blob/master/.env)
 
 
   
@@ -80,7 +80,7 @@ npm start
   
 <h3 align="center"> My Sosial Media 🌎 </h3>
 <p align="center">
-<a href="https://instagram.com/rayyreall"><img src="https://img.shields.io/badge/instagram-%23E4405F.svg?&style=for-the-badge&logo=instagram&logoColor=white"/></a>
+<a href="https://instagram.com/fourzy_"><img src="https://img.shields.io/badge/instagram-%23E4405F.svg?&style=for-the-badge&logo=instagram&logoColor=white"/></a>
 
 </p>
 
