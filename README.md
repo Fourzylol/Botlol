@@ -2,7 +2,7 @@
 
 <p align="center"><img width=30% src="https://i.ibb.co/cwKfKsv/IMG-20210519-202626.jpg"></p>
 
-<p align="center">Hi I`am Ra at the moment I'm learning a small part of the basics of programming I can only a little. This time I created a repository for the Whatsapp bot project using the Lib that was made by adiwajshing previously
+<p align="center">Hi I`am Fourzy at the moment I'm learning a small part of the basics of programming I can only a little. This time I created a repository for the Whatsapp bot project using the Lib that was made by adiwajshing previously
   
   
 <h2 align="center">ABOUT ME</h2>
